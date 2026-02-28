@@ -19,6 +19,29 @@ type FormState = {
   tweets: string;
 };
 
+const FEATURE_EXAMPLES: Partial<Record<FeatureId, Array<{ label: string; values: Partial<FormState> }>>> = {
+  viralScorePredictor: [
+    { label: "Bold contrarian", values: { niche: "creator growth", draft: "Most creators are addicted to vanity metrics. Revenue comes from narrative control." } },
+    { label: "Data-led hook", values: { niche: "SaaS", draft: "We cut churn 22% by removing one onboarding step. Here is the exact change." } },
+  ],
+  bestTimeToPost: [
+    { label: "B2B audience", values: { niche: "B2B SaaS founders" } },
+    { label: "Creator niche", values: { niche: "solo creator monetization" } },
+  ],
+  contentPerformancePrediction: [
+    { label: "Lead-gen post", values: { niche: "agency growth", draft: "If your pipeline is dry, your content has no buyer intent." } },
+    { label: "Educational post", values: { niche: "AI education", draft: "3 mistakes beginners make when building AI workflows." } },
+  ],
+  viralHookIntelligence: [
+    { label: "AI niche", values: { niche: "AI creators", samplePosts: "AI will not replace creators.\\nPrompting is not a strategy.\\nMost AI content has zero positioning." } },
+    { label: "Founder niche", values: { niche: "startup founders", samplePosts: "Most founders scale chaos, not systems.\\nDistribution beats product in early stage." } },
+  ],
+  preLaunchOptimizer: [
+    { label: "Thread opener", values: { niche: "personal branding", draft: "I grew from 0 to 10k followers by doing one thing most people avoid." } },
+    { label: "Offer CTA", values: { niche: "coaching", draft: "If you want a repeatable growth system, comment SYSTEM and I’ll send it." } },
+  ],
+};
+
 const VALID_FEATURE_IDS = new Set<FeatureId>([
   "viralScorePredictor",
   "bestTimeToPost",
@@ -109,6 +132,10 @@ export default function FeatureDetailPage() {
       });
   }, [featureId, router]);
 
+  useEffect(() => {
+    setResult(null);
+  }, [featureId]);
+
   const meta = useMemo(() => FEATURE_UI_META[featureId], [featureId]);
 
   const runFeature = async () => {
@@ -188,6 +215,8 @@ export default function FeatureDetailPage() {
     audience: ["leadMagnetGenerator", "audiencePsychology", "monetizationToolkit"].includes(featureId),
   };
 
+  const examples = FEATURE_EXAMPLES[featureId] || [];
+
   return (
     <div className="min-h-full p-5 bg-gradient-to-br from-violet-50 via-white to-indigo-50">
       <div className="max-w-4xl mx-auto space-y-4">
@@ -208,6 +237,26 @@ export default function FeatureDetailPage() {
             <div className="mb-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs text-amber-700">
               This module requires {feature.minimumPlan.toUpperCase()} plan access.
               <Link href="/dashboard/billing" className="ml-2 font-semibold underline">Upgrade</Link>
+            </div>
+          )}
+
+          {examples.length > 0 && (
+            <div className="mb-4">
+              <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-400 mb-2">Examples</p>
+              <div className="flex flex-wrap gap-2">
+                {examples.map((ex) => (
+                  <button
+                    key={ex.label}
+                    onClick={() => {
+                      setState((s) => ({ ...s, ...ex.values }));
+                      setResult(null);
+                    }}
+                    className="rounded-full border border-violet-200 bg-violet-50 px-3 py-1 text-xs font-semibold text-violet-700 hover:bg-violet-100"
+                  >
+                    {ex.label}
+                  </button>
+                ))}
+              </div>
             </div>
           )}
 

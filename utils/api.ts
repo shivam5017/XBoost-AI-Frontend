@@ -117,7 +117,7 @@ export const api = {
     reply: (
       tweetText: string,
       tone: string,
-      opts?: { tweetId?: string; wordCount?: number; templateId?: string },
+      opts?: { tweetId?: string; wordCount?: number; templateId?: string; customPrompt?: string },
     ) =>
       request<{ reply: string; tone: string }>("/ai/reply", {
         method: "POST",
@@ -131,7 +131,7 @@ export const api = {
     create: (
       topic: string,
       tone: string,
-      opts?: { wordCount?: number; templateId?: string },
+      opts?: { wordCount?: number; templateId?: string; customPrompt?: string },
     ) =>
       request<{ tweet: string }>("/ai/create", {
         method: "POST",
@@ -140,7 +140,7 @@ export const api = {
     rewrite: (
       draftText: string,
       tone: string,
-      opts?: { wordCount?: number; templateId?: string },
+      opts?: { wordCount?: number; templateId?: string; customPrompt?: string },
     ) =>
       request<{ rewrite: string }>("/ai/rewrite", {
         method: "POST",
