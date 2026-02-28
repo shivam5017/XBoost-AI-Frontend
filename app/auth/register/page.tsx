@@ -128,6 +128,11 @@ export default function RegisterPage() {
             Sign In
           </a>
         </div>
+        <div className="mt-3 text-center text-sm">
+          <a href="/" className="text-gray-500 hover:text-indigo-600">
+            ← Back to Home
+          </a>
+        </div>
       </div>
     </div>
   );

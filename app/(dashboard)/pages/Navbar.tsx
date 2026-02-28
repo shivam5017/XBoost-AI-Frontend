@@ -136,7 +136,7 @@ export default function Navbar() {
           {/* CTAs */}
           <div className="flex flex-col gap-3">
             <a
-              href="#"
+              href="/auth/login"
               className="w-full py-3 rounded-xl border border-purple-500/20 text-[14px] font-medium text-gray-500 hover:text-[#7c3aed] hover:border-purple-400/30 text-center transition-all duration-200"
             >
               Log in

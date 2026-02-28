@@ -19,6 +19,7 @@ function resolveApiBase() {
 }
 
 const API_BASE = resolveApiBase();
+const AUTH_TOKEN_KEY = "xboost_auth_token";
 
 function withBase(path: string) {
   if (/^https?:\/\//i.test(path)) return path;
@@ -26,14 +27,30 @@ function withBase(path: string) {
   return `${API_BASE}${normalizedPath}`;
 }
 
+function getAuthToken() {
+  if (typeof window === "undefined") return null;
+  return window.localStorage.getItem(AUTH_TOKEN_KEY);
+}
+
+function setAuthToken(token?: string | null) {
+  if (typeof window === "undefined") return;
+  if (!token) {
+    window.localStorage.removeItem(AUTH_TOKEN_KEY);
+    return;
+  }
+  window.localStorage.setItem(AUTH_TOKEN_KEY, token);
+}
+
 async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC";
+  const token = getAuthToken();
   const res = await fetch(withBase(path), {
     ...options,
     credentials: "include",
     headers: {
       "Content-Type": "application/json",
       "x-timezone": timeZone,
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...options.headers,
     },
   });
@@ -48,16 +65,22 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
 
 export const api = {
   auth: {
-    login: (email: string, password: string) =>
-      request<{ user: User }>("/auth/login", {
+    login: async (email: string, password: string) => {
+      const data = await request<{ user: User; token?: string }>("/auth/login", {
         method: "POST",
         body: JSON.stringify({ email, password }),
-      }),
-    register: (email: string, password: string, username?: string) =>
-      request<{ user: User }>("/auth/register", {
+      });
+      setAuthToken(data.token ?? null);
+      return { user: data.user };
+    },
+    register: async (email: string, password: string, username?: string) => {
+      const data = await request<{ user: User; token?: string }>("/auth/register", {
         method: "POST",
         body: JSON.stringify({ email, password, username }),
-      }),
+      });
+      setAuthToken(data.token ?? null);
+      return { user: data.user };
+    },
     profile: () => request<User>("/auth/profile"),
     updateGoal: (dailyGoal: number) =>
       request<User>("/auth/goal", {
@@ -83,8 +106,11 @@ export const api = {
         method: "DELETE",
         body: JSON.stringify({ provider }),
       }),
-    logout: () =>
-      request<{ success: boolean }>("/auth/logout", { method: "POST" }),
+    logout: async () => {
+      const data = await request<{ success: boolean }>("/auth/logout", { method: "POST" });
+      setAuthToken(null);
+      return data;
+    },
   },
 
   ai: {

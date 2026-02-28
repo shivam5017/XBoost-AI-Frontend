@@ -111,6 +111,11 @@ export default function LoginPage() {
               Create one
             </a>
           </div>
+          <div className="text-center text-sm">
+            <a href="/" className="text-gray-500 hover:text-indigo-600">
+              ← Back to Home
+            </a>
+          </div>
 
         </form>
       </div>
