@@ -65,13 +65,23 @@ export const api = {
         body: JSON.stringify({ dailyGoal }),
       }),
     saveApiKey: (openaiKey: string) =>
-      request<{ success: boolean; hasApiKey: boolean }>("/auth/api-key", {
+      request<{ success: boolean; hasApiKey: boolean; providers?: { provider: string; masked: string }[] }>("/auth/api-key", {
         method: "POST",
         body: JSON.stringify({ openaiKey }),
+      }),
+    saveProviderApiKey: (provider: string, apiKey: string) =>
+      request<{ success: boolean; hasApiKey: boolean; providers?: { provider: string; masked: string }[] }>("/auth/api-key", {
+        method: "POST",
+        body: JSON.stringify({ provider, apiKey }),
       }),
     removeApiKey: () =>
       request<{ success: boolean; hasApiKey: boolean }>("/auth/api-key", {
         method: "DELETE",
+      }),
+    removeProviderApiKey: (provider: string) =>
+      request<{ success: boolean; hasApiKey: boolean }>("/auth/api-key", {
+        method: "DELETE",
+        body: JSON.stringify({ provider }),
       }),
     logout: () =>
       request<{ success: boolean }>("/auth/logout", { method: "POST" }),
@@ -173,6 +183,7 @@ export interface User {
   createdAt: string;
   hasApiKey?: boolean;
   openaiKey?: string;
+  apiKeyProviders?: { provider: string; masked: string }[];
 }
 
 export interface AnalysisResult {
