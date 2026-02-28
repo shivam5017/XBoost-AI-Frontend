@@ -11,7 +11,7 @@ const navItems = [
   { label: "Tweet Templates", href: "/dashboard/tweet-templates" },
   { label: "Analytics", href: "/dashboard/analytics" },
   { label: "Billing", href: "/dashboard/billing" },
-  { label: "Admin", href: "/dashboard/admin" },
+  // { label: "Admin", href: "/dashboard/admin" },
   { label: "Settings", href: "/dashboard/settings" },
 ];
 
