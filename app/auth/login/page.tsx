@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { api } from "@/utils/api";
+import { toast } from "sonner";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -20,9 +21,12 @@ export default function LoginPage() {
       setError(null);
 
       await api.auth.login(email, password);
+      toast.success("Logged in successfully");
       router.push("/dashboard");
     } catch (err: any) {
-      setError(err.message || "Login failed");
+      const message = err.message || "Login failed";
+      setError(message);
+      toast.error(message);
     } finally {
       setLoading(false);
     }

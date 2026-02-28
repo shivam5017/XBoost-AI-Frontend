@@ -16,6 +16,20 @@ body {
   min-height: 100vh;
 }
 
+.shimmer {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(110deg, #eef2ff 8%, #e0e7ff 18%, #eef2ff 33%);
+  background-size: 200% 100%;
+  animation: shimmer 1.25s linear infinite;
+}
+
+@keyframes shimmer {
+  to {
+    background-position-x: -200%;
+  }
+}
+
 /* Headings = Syne (now works correctly) */
 h1, h2, h3 {
   font-family: var(--font-syne), sans-serif;

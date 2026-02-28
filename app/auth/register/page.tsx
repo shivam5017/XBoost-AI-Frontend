@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { api } from "@/utils/api";
+import { toast } from "sonner";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -23,9 +24,12 @@ export default function RegisterPage() {
       setError(null);
 
       await api.auth.register(email, password, username || undefined);
+      toast.success("Account created successfully");
       router.push("/dashboard");
     } catch (err: any) {
-      setError(err.message || "Registration failed");
+      const message = err.message || "Registration failed";
+      setError(message);
+      toast.error(message);
     } finally {
       setLoading(false);
     }

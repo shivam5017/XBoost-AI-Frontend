@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { api, User } from "@/utils/api";
 import PageLoader from "../../loading";
+import { toast } from "sonner";
 
 const GOAL_OPTIONS = [5, 10, 20];
 const PROVIDERS = [
@@ -59,9 +60,11 @@ export default function DashboardSettingsPage() {
       await api.auth.updateGoal(selectedGoal);
       setUser((prev) => (prev ? { ...prev, dailyGoal: selectedGoal } : prev));
       setGoalSaved(true);
+      toast.success("Daily goal updated");
       setTimeout(() => setGoalSaved(false), 2000);
     } catch (err) {
       console.error(err);
+      toast.error("Failed to update daily goal");
     }
   };
 
@@ -79,10 +82,13 @@ export default function DashboardSettingsPage() {
         );
         setApiKey("");
         setKeySaved(true);
+        toast.success(`${provider.toUpperCase()} key saved securely`);
         setTimeout(() => setKeySaved(false), 2000);
       }
     } catch (err: any) {
-      setKeyError(err.message || "Failed to save key");
+      const message = err.message || "Failed to save key";
+      setKeyError(message);
+      toast.error(message);
     } finally {
       setKeySaving(false);
     }
@@ -97,8 +103,10 @@ export default function DashboardSettingsPage() {
       }
       const profile = await api.auth.profile();
       setUser(profile);
+      toast.success(selectedProvider ? "Provider key removed" : "All provider keys removed");
     } catch (err) {
       console.error(err);
+      toast.error("Failed to remove key");
     }
   };
 

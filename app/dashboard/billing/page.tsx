@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useStore } from "@/store/index";
 import type { Plan, PlanId, Payment } from "@/utils/api";
+import { toast } from "sonner";
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -239,6 +240,23 @@ const Spinner = () => (
   <div className="w-4 h-4 border-2 border-indigo-200 border-t-indigo-500 rounded-full animate-spin" />
 );
 
+const PlansSkeleton = () => (
+  <div className="grid grid-cols-1 gap-3">
+    <div className="h-56 rounded-2xl shimmer" />
+    <div className="h-56 rounded-2xl shimmer" />
+    <div className="h-56 rounded-2xl shimmer" />
+  </div>
+);
+
+const HistorySkeleton = () => (
+  <div className="space-y-2 p-4">
+    <div className="h-10 rounded-xl shimmer" />
+    <div className="h-10 rounded-xl shimmer" />
+    <div className="h-10 rounded-xl shimmer" />
+    <div className="h-10 rounded-xl shimmer" />
+  </div>
+);
+
 // ── Main Page ─────────────────────────────────────────────────────────────────
 
 export default function BillingPage() {
@@ -253,6 +271,7 @@ export default function BillingPage() {
   const [tab, setTab]               = useState<"plans" | "usage" | "history">("plans");
   const [checkingOut, setCheckingOut] = useState<PlanId | null>(null);
   const [showCancel, setShowCancel]   = useState(false);
+  const lastBillingErrorRef = useRef<string | null>(null);
 
   useEffect(() => {
     loadPlans();
@@ -279,6 +298,7 @@ export default function BillingPage() {
       const runSync = async (attempt = 0) => {
         const synced = await syncCheckout(checkoutId);
         if (synced) {
+          toast.success("Subscription updated successfully");
           window.localStorage.removeItem("xboost_pending_checkout_id");
           loadSubscription();
           loadPayments();
@@ -296,7 +316,21 @@ export default function BillingPage() {
       runSync();
     }
 
+    if (queryState === "cancel") {
+      toast.info("Checkout cancelled");
+    }
+
   }, [loadPayments, loadPlans, loadSubscription, syncCheckout]);
+
+  useEffect(() => {
+    if (billingError && billingError !== lastBillingErrorRef.current) {
+      toast.error(billingError);
+      lastBillingErrorRef.current = billingError;
+    }
+    if (!billingError) {
+      lastBillingErrorRef.current = null;
+    }
+  }, [billingError]);
 
   useEffect(() => {
     const interval = window.setInterval(() => {
@@ -315,12 +349,15 @@ export default function BillingPage() {
 
   const handleCheckout = async (planId: "starter" | "pro") => {
     setCheckingOut(planId);
+    toast.loading(`Starting ${planId} checkout...`, { id: "billing-checkout" });
     await startCheckout(planId);
+    toast.dismiss("billing-checkout");
     setCheckingOut(null);
   };
 
   const handleCancel = async () => {
     await cancelSubscription();
+    toast.success("Subscription cancellation scheduled");
     setShowCancel(false);
   };
 
@@ -380,9 +417,7 @@ export default function BillingPage() {
       {tab === "plans" && (
         <>
           {billingLoading && !plans.length ? (
-            <div className="flex items-center justify-center py-12 gap-2 text-xs text-gray-400">
-              <Spinner /> Loading plans…
-            </div>
+            <PlansSkeleton />
           ) : (
             <>
               <div className="grid grid-cols-1 gap-3">
@@ -505,9 +540,7 @@ export default function BillingPage() {
             ))}
           </div>
           {billingLoading ? (
-            <div className="flex items-center justify-center py-10 gap-2 text-xs text-gray-400">
-              <Spinner /> Loading…
-            </div>
+            <HistorySkeleton />
           ) : payments.length === 0 ? (
             <div className="py-10 text-center text-xs text-gray-300">No payment history yet</div>
           ) : (

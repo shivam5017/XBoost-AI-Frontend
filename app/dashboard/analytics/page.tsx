@@ -13,6 +13,7 @@ import {
 } from "recharts";
 import { useStore } from "@/store/index";
 import { api } from "@/utils/api";
+import { toast } from "sonner";
 
 type Period = "day" | "week" | "month";
 
@@ -128,9 +129,10 @@ function ChartCard({
         <PeriodSwitcher value={period} onChange={onPeriodChange} />
       </div>
       {loading ? (
-        <div className="flex items-center justify-center h-32 text-xs text-gray-400">
-          <div className="w-5 h-5 border-2 border-indigo-200 border-t-indigo-500 rounded-full animate-spin mr-2" />
-          Loading...
+        <div className="h-40 rounded-xl border border-indigo-100 bg-indigo-50/40 p-3">
+          <div className="h-4 w-28 rounded-md shimmer mb-3" />
+          <div className="h-24 w-full rounded-lg shimmer mb-2" />
+          <div className="h-3 w-40 rounded-md shimmer" />
         </div>
       ) : (
         children
@@ -197,6 +199,7 @@ export default function AnalyticsPage() {
       );
     } catch (e) {
       console.error(e);
+      toast.error("Failed to load analytics data");
     } finally {
       setLoading(false);
     }
