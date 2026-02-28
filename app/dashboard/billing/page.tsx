@@ -246,7 +246,7 @@ export default function BillingPage() {
     subscription, plans, payments,
     billingLoading, billingError,
     loadPlans, loadSubscription, loadPayments,
-    startCheckout, cancelSubscription, openPortal,
+    startCheckout, syncCheckout, cancelSubscription, openPortal,
     clearBillingError,
   } = useStore();
 
@@ -254,7 +254,41 @@ export default function BillingPage() {
   const [checkingOut, setCheckingOut] = useState<PlanId | null>(null);
   const [showCancel, setShowCancel]   = useState(false);
 
-  useEffect(() => { loadPlans(); loadSubscription(); }, []);
+  useEffect(() => {
+    loadPlans();
+    loadSubscription();
+
+    const pendingCheckoutId =
+      typeof window !== "undefined"
+        ? window.localStorage.getItem("xboost_pending_checkout_id")
+        : null;
+    const query =
+      typeof window !== "undefined"
+        ? new URLSearchParams(window.location.search)
+        : null;
+    const queryState = query?.get("checkout");
+    const queryCheckoutId =
+      query?.get("checkoutId") ||
+      query?.get("checkout_id") ||
+      query?.get("session_id");
+    const checkoutId = queryCheckoutId || pendingCheckoutId;
+
+    // Try reconciliation whenever we have a checkout id.
+    // This covers cases where Dodo does not append expected state params.
+    if (checkoutId) {
+      syncCheckout(checkoutId)
+        .then(() => {
+          window.localStorage.removeItem("xboost_pending_checkout_id");
+          loadSubscription();
+          loadPayments();
+        })
+        .catch(() => {
+          if (queryState === "success" || queryState === "return") {
+            // billingError is handled in store
+          }
+        });
+    }
+  }, []);
   useEffect(() => { if (tab === "history") loadPayments(); }, [tab]);
 
   const currentPlanId: PlanId = subscription?.subscription.planId ?? "free";

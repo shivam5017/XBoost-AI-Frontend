@@ -43,6 +43,7 @@ interface AppState {
   loadSubscription: () => Promise<void>;
   loadPayments: () => Promise<void>;
   startCheckout: (planId: PlanId) => Promise<void>;
+  syncCheckout: (checkoutId: string) => Promise<void>;
   openPortal: () => Promise<void>;
   cancelSubscription: () => Promise<void>;
 }
@@ -218,10 +219,17 @@ export const useStore = create<AppState>((set) => ({
 
     try {
       set({ billingLoading: true, billingError: null });
-      const response = await api.billing.checkout(planId);
+      const base = typeof window !== "undefined" ? window.location.origin : "https://xboostai.netlify.app";
+      const successUrl = `${base}/dashboard/billing?checkout=success`;
+      const cancelUrl = `${base}/dashboard/billing?checkout=cancel`;
+      const response = await api.billing.checkout(planId, { successUrl, cancelUrl });
 
       if (!response.checkoutUrl) {
         throw new Error("Checkout URL missing");
+      }
+
+      if (response.checkoutId && typeof window !== "undefined") {
+        window.localStorage.setItem("xboost_pending_checkout_id", response.checkoutId);
       }
 
       window.location.href = response.checkoutUrl;
@@ -229,6 +237,22 @@ export const useStore = create<AppState>((set) => ({
     } catch (err: any) {
       set({
         billingError: err.message || "Failed to start checkout",
+        billingLoading: false,
+      });
+    }
+  },
+
+  syncCheckout: async (checkoutId: string) => {
+    try {
+      set({ billingLoading: true, billingError: null });
+      const result = await api.billing.syncCheckout(checkoutId);
+      set({
+        subscription: result.billing,
+        billingLoading: false,
+      });
+    } catch (err: any) {
+      set({
+        billingError: err.message || "Failed to sync checkout",
         billingLoading: false,
       });
     }

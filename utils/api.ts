@@ -130,14 +130,26 @@ export const api = {
     plans: () => request<Plan[]>("/billing/plans"),
     subscription: () => request<BillingSubscriptionResponse>("/billing/subscription"),
     payments: () => request<Payment[]>("/billing/payments"),
-    checkout: (planId: "starter" | "pro") =>
+    checkout: (
+      planId: "starter" | "pro",
+      opts?: { successUrl?: string; cancelUrl?: string },
+    ) =>
       request<{ checkoutId: string | null; checkoutUrl: string | null }>(
         "/billing/checkout",
         {
           method: "POST",
-          body: JSON.stringify({ planId }),
+          body: JSON.stringify({ planId, ...opts }),
         },
       ),
+    syncCheckout: (checkoutId: string) =>
+      request<{
+        success: boolean;
+        status: string;
+        billing: BillingSubscriptionResponse;
+      }>("/billing/sync-checkout", {
+        method: "POST",
+        body: JSON.stringify({ checkoutId }),
+      }),
     portal: () => request<{ url: string | null }>("/billing/portal", { method: "POST" }),
     cancel: () =>
       request<{ success: boolean; subscription: BillingSubscription }>(
@@ -252,4 +264,3 @@ export interface Payment {
   dodoPaymentId?: string | null;
   dodoInvoiceId?: string | null;
 }
-
