@@ -53,7 +53,7 @@ const plans = [
   },
 ] as const;
 
-function PricingCard({ plan, index }: { plan: (typeof plans)[0]; index: number }) {
+function PricingCard({ plan, index }: { plan: (typeof plans)[number]; index: number }) {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
 
