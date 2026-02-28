@@ -27,11 +27,13 @@ function withBase(path: string) {
 }
 
 async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
+  const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC";
   const res = await fetch(withBase(path), {
     ...options,
     credentials: "include",
     headers: {
       "Content-Type": "application/json",
+      "x-timezone": timeZone,
       ...options.headers,
     },
   });

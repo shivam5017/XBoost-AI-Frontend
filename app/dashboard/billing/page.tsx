@@ -295,7 +295,17 @@ export default function BillingPage() {
 
       runSync();
     }
-  }, []);
+
+  }, [loadPayments, loadPlans, loadSubscription, syncCheckout]);
+
+  useEffect(() => {
+    const interval = window.setInterval(() => {
+      loadSubscription();
+      if (tab === "history") loadPayments();
+    }, 15000);
+
+    return () => window.clearInterval(interval);
+  }, [tab, loadPayments, loadSubscription]);
   useEffect(() => { if (tab === "history") loadPayments(); }, [tab]);
 
   const currentPlanId: PlanId = subscription?.subscription.planId ?? "free";
