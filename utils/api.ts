@@ -1,9 +1,33 @@
 // const API_BASE = "http://localhost:4500";
-// const API_BASE = "https://xboost-ai-backend.onrender.com"
-const API_BASE = process.env.API_BASE as string;
+const DEFAULT_API_BASE = "https://xboost-ai-backend.onrender.com";
+
+function resolveApiBase() {
+  const candidates = [
+    process.env.NEXT_PUBLIC_API_BASE,
+    process.env.API_BASE,
+    DEFAULT_API_BASE,
+  ];
+
+  for (const value of candidates) {
+    if (typeof value !== "string") continue;
+    const normalized = value.trim();
+    if (!normalized || normalized === "undefined" || normalized === "null") continue;
+    return normalized.replace(/\/+$/, "");
+  }
+
+  return DEFAULT_API_BASE;
+}
+
+const API_BASE = resolveApiBase();
+
+function withBase(path: string) {
+  if (/^https?:\/\//i.test(path)) return path;
+  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+  return `${API_BASE}${normalizedPath}`;
+}
 
 async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
-  const res = await fetch(`${API_BASE}${path}`, {
+  const res = await fetch(withBase(path), {
     ...options,
     credentials: "include",
     headers: {
@@ -228,5 +252,4 @@ export interface Payment {
   dodoPaymentId?: string | null;
   dodoInvoiceId?: string | null;
 }
-
 
