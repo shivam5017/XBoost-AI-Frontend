@@ -15,6 +15,16 @@ const PROVIDERS = [
   { id: "mistral", label: "Mistral" },
 ];
 
+const PROVIDER_LINKS: Record<string, { label: string; href: string }> = {
+  openai: { label: "platform.openai.com", href: "https://platform.openai.com/api-keys" },
+  chatgpt: { label: "platform.openai.com", href: "https://platform.openai.com/api-keys" },
+  anthropic: { label: "console.anthropic.com", href: "https://console.anthropic.com/settings/keys" },
+  google: { label: "aistudio.google.com", href: "https://aistudio.google.com/app/apikey" },
+  xai: { label: "console.x.ai", href: "https://console.x.ai/" },
+  cohere: { label: "dashboard.cohere.com", href: "https://dashboard.cohere.com/api-keys" },
+  mistral: { label: "console.mistral.ai", href: "https://console.mistral.ai/api-keys/" },
+};
+
 export default function DashboardSettingsPage() {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
@@ -27,6 +37,7 @@ export default function DashboardSettingsPage() {
   const [keySaving, setKeySaving] = useState(false);
   const [keySaved, setKeySaved] = useState(false);
   const [keyError, setKeyError] = useState("");
+  const providerLink = PROVIDER_LINKS[provider] ?? PROVIDER_LINKS.openai;
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -181,7 +192,7 @@ export default function DashboardSettingsPage() {
                 type={showKey ? "text" : "password"}
                 value={apiKey}
                 onChange={(e) => setApiKey(e.target.value)}
-                placeholder="Provider API key..."
+                placeholder={`${provider.toUpperCase()} API key...`}
                 className="flex-1 border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 outline-none bg-gray-50 transition"
               />
               <button
@@ -198,6 +209,14 @@ export default function DashboardSettingsPage() {
             </div>
           )}
 
+          <p className="text-xs text-gray-400">
+            Get your key from{" "}
+            <a href={providerLink.href} target="_blank" rel="noreferrer" className="text-indigo-500 hover:text-indigo-600 underline">
+              {providerLink.label}
+            </a>
+            .
+          </p>
+
           <button
             onClick={handleSaveApiKey}
             disabled={keySaving || !apiKey.trim()}
@@ -209,6 +228,15 @@ export default function DashboardSettingsPage() {
           >
             {keySaved ? "✓ Key Saved!" : keySaving ? "Saving..." : "Save API Key"}
           </button>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
+        <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Legal</div>
+        <div className="flex gap-4 text-sm">
+          <a href="/privacy-policy" className="text-indigo-500 hover:text-indigo-600">Privacy Policy</a>
+          <a href="/terms-of-service" className="text-indigo-500 hover:text-indigo-600">Terms</a>
+          <a href="/cookie-policy" className="text-indigo-500 hover:text-indigo-600">Cookie Policy</a>
         </div>
       </div>
 

@@ -9,7 +9,11 @@ const faqs = [
   },
   {
     q: "Will X ban me for using Xboost?",
-    a: "No. Xboost is a read-only browser extension. It reads the page to give you suggestions but never posts on your behalf or interacts with X's API automatically.",
+    a: "Xboost only acts when you click a button. It can draft content and, if you choose, fill and submit the native X composer. There is no background auto-posting.",
+  },
+  {
+    q: "Do I need to bring my own API key?",
+    a: "Yes. Xboost uses a BYOK model for AI generation. Add your own provider key (OpenAI/ChatGPT, Anthropic, Gemini, xAI, Cohere, or Mistral) in Settings.",
   },
   {
     q: "How does the AI Rewrite Engine work?",

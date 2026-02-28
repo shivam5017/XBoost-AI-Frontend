@@ -69,6 +69,14 @@ function Sidebar() {
           Logout
         </button>
 
+        <div className="text-[11px] text-gray-400 flex flex-wrap gap-2 justify-center">
+          <a href="/privacy-policy" className="hover:text-indigo-500">Privacy</a>
+          <span>·</span>
+          <a href="/terms-of-service" className="hover:text-indigo-500">Terms</a>
+          <span>·</span>
+          <a href="/cookie-policy" className="hover:text-indigo-500">Cookies</a>
+        </div>
+
         <div className="text-xs text-gray-400 text-center">© 2026 XBoost</div>
       </div>
     </aside>
