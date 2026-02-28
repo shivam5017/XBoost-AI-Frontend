@@ -19,28 +19,7 @@ type FormState = {
   tweets: string;
 };
 
-const FEATURE_EXAMPLES: Partial<Record<FeatureId, Array<{ label: string; values: Partial<FormState> }>>> = {
-  viralScorePredictor: [
-    { label: "Bold contrarian", values: { niche: "creator growth", draft: "Most creators are addicted to vanity metrics. Revenue comes from narrative control." } },
-    { label: "Data-led hook", values: { niche: "SaaS", draft: "We cut churn 22% by removing one onboarding step. Here is the exact change." } },
-  ],
-  bestTimeToPost: [
-    { label: "B2B audience", values: { niche: "B2B SaaS founders" } },
-    { label: "Creator niche", values: { niche: "solo creator monetization" } },
-  ],
-  contentPerformancePrediction: [
-    { label: "Lead-gen post", values: { niche: "agency growth", draft: "If your pipeline is dry, your content has no buyer intent." } },
-    { label: "Educational post", values: { niche: "AI education", draft: "3 mistakes beginners make when building AI workflows." } },
-  ],
-  viralHookIntelligence: [
-    { label: "AI niche", values: { niche: "AI creators", samplePosts: "AI will not replace creators.\\nPrompting is not a strategy.\\nMost AI content has zero positioning." } },
-    { label: "Founder niche", values: { niche: "startup founders", samplePosts: "Most founders scale chaos, not systems.\\nDistribution beats product in early stage." } },
-  ],
-  preLaunchOptimizer: [
-    { label: "Thread opener", values: { niche: "personal branding", draft: "I grew from 0 to 10k followers by doing one thing most people avoid." } },
-    { label: "Offer CTA", values: { niche: "coaching", draft: "If you want a repeatable growth system, comment SYSTEM and I’ll send it." } },
-  ],
-};
+type ExamplePreset = { label: string; values: Partial<FormState> };
 
 const VALID_FEATURE_IDS = new Set<FeatureId>([
   "viralScorePredictor",
@@ -58,14 +37,189 @@ const VALID_FEATURE_IDS = new Set<FeatureId>([
   "monetizationToolkit",
 ]);
 
+const MARKET_PRESETS = [
+  { label: "SaaS", niche: "B2B SaaS growth", audience: "founders and growth leads" },
+  { label: "Tech", niche: "AI and developer tools", audience: "builders and engineers" },
+  { label: "Sales", niche: "outbound and pipeline", audience: "sales reps and SDRs" },
+  { label: "Creator", niche: "creator monetization", audience: "content creators" },
+  { label: "Ecom", niche: "ecommerce retention", audience: "DTC operators" },
+  { label: "Agency", niche: "agency positioning", audience: "service business owners" },
+] as const;
+
+const INPUT_HELP: Partial<Record<FeatureId, Partial<Record<keyof FormState, string>>>> = {
+  viralScorePredictor: {
+    niche: "Defines the audience context and scoring baseline.",
+    draft: "The exact post you want scored for virality.",
+  },
+  bestTimeToPost: {
+    niche: "Helps match timing patterns to your content category.",
+  },
+  contentPerformancePrediction: {
+    niche: "Sets benchmark behavior for your market.",
+    draft: "The draft to forecast and optimize.",
+  },
+  viralHookIntelligence: {
+    niche: "Your target topic lane for hook analysis.",
+    samplePosts: "Paste 3+ relevant posts (one per line) to extract hook patterns.",
+  },
+  preLaunchOptimizer: {
+    niche: "Sets audience context for optimization.",
+    draft: "The post to improve before publishing.",
+  },
+  nicheTrendRadar: {
+    niche: "The niche where trend signals should be tracked.",
+  },
+  growthStrategist: {
+    niche: "Main market for your strategy roadmap.",
+    goals: "What outcomes you want in the next 30 days.",
+  },
+  brandAnalyzer: {
+    profile: "Current profile/bio/about text.",
+    tweets: "5-10 recent tweets (one per line) for voice analysis.",
+  },
+  threadWriterPro: {
+    topic: "Thread topic to develop.",
+    goals: "What this thread should achieve (reach, leads, authority).",
+  },
+  leadMagnetGenerator: {
+    source: "Source content to transform into a lead magnet.",
+    audience: "Who this lead magnet is for.",
+  },
+  audiencePsychology: {
+    niche: "Market you want psychological insight for.",
+    audience: "Specific segment inside that niche.",
+  },
+  repurposingEngine: {
+    source: "Your original post/thread to repurpose.",
+  },
+  monetizationToolkit: {
+    niche: "Business niche to monetize.",
+    audience: "Target buyer profile.",
+  },
+};
+
 function splitLines(v: string) {
   return v.split("\n").map((x) => x.trim()).filter(Boolean);
+}
+
+function buildExamples(featureId: FeatureId): ExamplePreset[] {
+  return MARKET_PRESETS.map((preset) => {
+    switch (featureId) {
+      case "viralScorePredictor":
+        return {
+          label: preset.label,
+          values: {
+            niche: preset.niche,
+            draft: `Most ${preset.audience} are optimizing vanity metrics instead of compounding outcomes. Here is the system that changed results in 30 days.`,
+          },
+        };
+      case "bestTimeToPost":
+        return { label: preset.label, values: { niche: preset.niche } };
+      case "contentPerformancePrediction":
+        return {
+          label: preset.label,
+          values: {
+            niche: preset.niche,
+            draft: `If you're in ${preset.niche}, this one decision will impact reach and conversion more than posting frequency.`,
+          },
+        };
+      case "viralHookIntelligence":
+        return {
+          label: preset.label,
+          values: {
+            niche: preset.niche,
+            samplePosts: [
+              `Most ${preset.audience} mistake consistency for strategy.`,
+              `I stopped doing this in ${preset.niche} and results improved fast.`,
+              `If your content has no clear decision point, it gets ignored.`,
+            ].join("\n"),
+          },
+        };
+      case "preLaunchOptimizer":
+        return {
+          label: preset.label,
+          values: {
+            niche: preset.niche,
+            draft: `I tested 3 frameworks in ${preset.niche}. One doubled qualified engagement.`
+          },
+        };
+      case "nicheTrendRadar":
+        return { label: preset.label, values: { niche: preset.niche } };
+      case "growthStrategist":
+        return {
+          label: preset.label,
+          values: {
+            niche: preset.niche,
+            goals: `Grow authority and inbound pipeline from ${preset.audience} over 30 days.`,
+          },
+        };
+      case "brandAnalyzer":
+        return {
+          label: preset.label,
+          values: {
+            profile: `I help ${preset.audience} grow using ${preset.niche} systems.`,
+            tweets: [
+              `Most people in ${preset.niche} are chasing noise.`,
+              `A repeatable system beats random inspiration every time.`,
+              `Positioning clarity is the highest leverage move.`,
+              `You do not need more ideas. You need better execution loops.`,
+              `Authority compounds when your POV is consistent.`
+            ].join("\n"),
+          },
+        };
+      case "threadWriterPro":
+        return {
+          label: preset.label,
+          values: {
+            topic: `${preset.niche}: 5 execution mistakes`,
+            goals: `Drive engagement and lead intent from ${preset.audience}.`,
+          },
+        };
+      case "leadMagnetGenerator":
+        return {
+          label: preset.label,
+          values: {
+            source: `A practical framework for ${preset.niche} execution from idea to conversion.`,
+            audience: preset.audience,
+          },
+        };
+      case "audiencePsychology":
+        return { label: preset.label, values: { niche: preset.niche, audience: preset.audience } };
+      case "repurposingEngine":
+        return {
+          label: preset.label,
+          values: { source: `How I turned one ${preset.niche} insight into 10 content assets and 3 leads.` },
+        };
+      case "monetizationToolkit":
+        return { label: preset.label, values: { niche: preset.niche, audience: preset.audience } };
+      default:
+        return { label: preset.label, values: { niche: preset.niche } };
+    }
+  });
+}
+
+function Field({
+  label,
+  hint,
+  children,
+}: {
+  label: string;
+  hint?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div>
+      <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">{label}</p>
+      {hint && <p className="text-xs text-slate-400 mt-1 mb-2">{hint}</p>}
+      {children}
+    </div>
+  );
 }
 
 function ResultView({ data }: { data: any }) {
   if (!data) return null;
   return (
-    <div className="mt-5 rounded-2xl border border-indigo-100 bg-white p-4">
+    <div className="mt-5 rounded-2xl border border-indigo-100 bg-white p-4 shadow-[0_6px_16px_rgba(92,100,230,0.06)]">
       {Object.entries(data).map(([key, value]) => (
         <div key={key} className="py-3 border-b border-slate-100 last:border-b-0">
           <div className="text-[11px] uppercase tracking-wide text-slate-400 font-semibold">{key.replace(/([A-Z])/g, " $1")}</div>
@@ -137,6 +291,8 @@ export default function FeatureDetailPage() {
   }, [featureId]);
 
   const meta = useMemo(() => FEATURE_UI_META[featureId], [featureId]);
+  const inputHelp = INPUT_HELP[featureId] || {};
+  const examples = useMemo(() => buildExamples(featureId), [featureId]);
 
   const runFeature = async () => {
     if (!feature?.enabled) {
@@ -215,8 +371,6 @@ export default function FeatureDetailPage() {
     audience: ["leadMagnetGenerator", "audiencePsychology", "monetizationToolkit"].includes(featureId),
   };
 
-  const examples = FEATURE_EXAMPLES[featureId] || [];
-
   return (
     <div className="min-h-full p-5 bg-gradient-to-br from-violet-50 via-white to-indigo-50">
       <div className="max-w-4xl mx-auto space-y-4">
@@ -240,38 +394,79 @@ export default function FeatureDetailPage() {
             </div>
           )}
 
-          {examples.length > 0 && (
-            <div className="mb-4">
-              <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-400 mb-2">Examples</p>
-              <div className="flex flex-wrap gap-2">
-                {examples.map((ex) => (
-                  <button
-                    key={ex.label}
-                    onClick={() => {
-                      setState((s) => ({ ...s, ...ex.values }));
-                      setResult(null);
-                    }}
-                    className="rounded-full border border-violet-200 bg-violet-50 px-3 py-1 text-xs font-semibold text-violet-700 hover:bg-violet-100"
-                  >
-                    {ex.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {needs.niche && <input className="rounded-xl border border-slate-200 px-3 py-2 text-sm" value={state.niche} onChange={(e) => setState((s) => ({ ...s, niche: e.target.value }))} placeholder="Niche" />}
-            {needs.audience && <input className="rounded-xl border border-slate-200 px-3 py-2 text-sm" value={state.audience} onChange={(e) => setState((s) => ({ ...s, audience: e.target.value }))} placeholder="Audience" />}
-            {needs.topic && <input className="rounded-xl border border-slate-200 px-3 py-2 text-sm" value={state.topic} onChange={(e) => setState((s) => ({ ...s, topic: e.target.value }))} placeholder="Topic" />}
-            {needs.goals && <input className="rounded-xl border border-slate-200 px-3 py-2 text-sm" value={state.goals} onChange={(e) => setState((s) => ({ ...s, goals: e.target.value }))} placeholder="Goal / Objective" />}
+          <div className="mb-4 rounded-xl border border-violet-100 bg-violet-50/50 p-4">
+            <p className="text-[11px] font-semibold uppercase tracking-wide text-violet-600 mb-2">How To Use</p>
+            <p className="text-xs text-slate-600">
+              Fill the required inputs below. Use one of the 6 market examples to auto-fill instantly, then run analysis.
+            </p>
           </div>
 
-          {needs.draft && <textarea className="mt-3 h-20 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm" value={state.draft} onChange={(e) => setState((s) => ({ ...s, draft: e.target.value }))} placeholder="Draft" />}
-          {needs.profile && <textarea className="mt-3 h-16 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm" value={state.profile} onChange={(e) => setState((s) => ({ ...s, profile: e.target.value }))} placeholder="Profile bio / profile summary" />}
-          {needs.samplePosts && <textarea className="mt-3 h-24 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm" value={state.samplePosts} onChange={(e) => setState((s) => ({ ...s, samplePosts: e.target.value }))} placeholder="Sample posts (one per line)" />}
-          {needs.tweets && <textarea className="mt-3 h-24 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm" value={state.tweets} onChange={(e) => setState((s) => ({ ...s, tweets: e.target.value }))} placeholder="Past tweets (one per line)" />}
-          {needs.source && <textarea className="mt-3 h-24 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm" value={state.source} onChange={(e) => setState((s) => ({ ...s, source: e.target.value }))} placeholder="Source content" />}
+          <div className="mb-4">
+            <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-400 mb-2">Examples (One-click presets)</p>
+            <div className="flex flex-wrap gap-2">
+              {examples.map((ex) => (
+                <button
+                  key={ex.label}
+                  onClick={() => {
+                    setState((s) => ({ ...s, ...ex.values }));
+                    setResult(null);
+                  }}
+                  className="rounded-full border border-violet-200 bg-violet-50 px-3 py-1 text-xs font-semibold text-violet-700 hover:bg-violet-100"
+                >
+                  {ex.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {needs.niche && (
+              <Field label="Niche" hint={inputHelp.niche}>
+                <input className="rounded-xl border border-slate-200 px-3 py-2 text-sm w-full" value={state.niche} onChange={(e) => setState((s) => ({ ...s, niche: e.target.value }))} placeholder="Niche" />
+              </Field>
+            )}
+            {needs.audience && (
+              <Field label="Audience" hint={inputHelp.audience}>
+                <input className="rounded-xl border border-slate-200 px-3 py-2 text-sm w-full" value={state.audience} onChange={(e) => setState((s) => ({ ...s, audience: e.target.value }))} placeholder="Audience" />
+              </Field>
+            )}
+            {needs.topic && (
+              <Field label="Topic" hint={inputHelp.topic}>
+                <input className="rounded-xl border border-slate-200 px-3 py-2 text-sm w-full" value={state.topic} onChange={(e) => setState((s) => ({ ...s, topic: e.target.value }))} placeholder="Topic" />
+              </Field>
+            )}
+            {needs.goals && (
+              <Field label="Goal / Objective" hint={inputHelp.goals}>
+                <input className="rounded-xl border border-slate-200 px-3 py-2 text-sm w-full" value={state.goals} onChange={(e) => setState((s) => ({ ...s, goals: e.target.value }))} placeholder="Goal / Objective" />
+              </Field>
+            )}
+          </div>
+
+          {needs.draft && (
+            <Field label="Draft" hint={inputHelp.draft}>
+              <textarea className="mt-1 h-24 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm" value={state.draft} onChange={(e) => setState((s) => ({ ...s, draft: e.target.value }))} placeholder="Draft" />
+            </Field>
+          )}
+          {needs.profile && (
+            <Field label="Profile" hint={inputHelp.profile}>
+              <textarea className="mt-1 h-20 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm" value={state.profile} onChange={(e) => setState((s) => ({ ...s, profile: e.target.value }))} placeholder="Profile bio / profile summary" />
+            </Field>
+          )}
+          {needs.samplePosts && (
+            <Field label="Sample Posts" hint={inputHelp.samplePosts}>
+              <textarea className="mt-1 h-28 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm" value={state.samplePosts} onChange={(e) => setState((s) => ({ ...s, samplePosts: e.target.value }))} placeholder="Sample posts (one per line)" />
+            </Field>
+          )}
+          {needs.tweets && (
+            <Field label="Past Tweets" hint={inputHelp.tweets}>
+              <textarea className="mt-1 h-28 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm" value={state.tweets} onChange={(e) => setState((s) => ({ ...s, tweets: e.target.value }))} placeholder="Past tweets (one per line)" />
+            </Field>
+          )}
+          {needs.source && (
+            <Field label="Source Content" hint={inputHelp.source}>
+              <textarea className="mt-1 h-28 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm" value={state.source} onChange={(e) => setState((s) => ({ ...s, source: e.target.value }))} placeholder="Source content" />
+            </Field>
+          )}
 
           <div className="mt-4 flex justify-end">
             <button
