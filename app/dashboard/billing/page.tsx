@@ -276,17 +276,24 @@ export default function BillingPage() {
     // Try reconciliation whenever we have a checkout id.
     // This covers cases where Dodo does not append expected state params.
     if (checkoutId) {
-      syncCheckout(checkoutId)
-        .then(() => {
+      const runSync = async (attempt = 0) => {
+        const synced = await syncCheckout(checkoutId);
+        if (synced) {
           window.localStorage.removeItem("xboost_pending_checkout_id");
           loadSubscription();
           loadPayments();
-        })
-        .catch(() => {
-          if (queryState === "success" || queryState === "return") {
-            // billingError is handled in store
-          }
-        });
+          return;
+        }
+
+        // Payment can stay "processing" briefly in Dodo test mode.
+        if (attempt < 3) {
+          window.setTimeout(() => {
+            runSync(attempt + 1);
+          }, 3000);
+        }
+      };
+
+      runSync();
     }
   }, []);
   useEffect(() => { if (tab === "history") loadPayments(); }, [tab]);

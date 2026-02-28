@@ -43,7 +43,7 @@ interface AppState {
   loadSubscription: () => Promise<void>;
   loadPayments: () => Promise<void>;
   startCheckout: (planId: PlanId) => Promise<void>;
-  syncCheckout: (checkoutId: string) => Promise<void>;
+  syncCheckout: (checkoutId: string) => Promise<boolean>;
   openPortal: () => Promise<void>;
   cancelSubscription: () => Promise<void>;
 }
@@ -250,11 +250,13 @@ export const useStore = create<AppState>((set) => ({
         subscription: result.billing,
         billingLoading: false,
       });
+      return Boolean(result.success);
     } catch (err: any) {
       set({
         billingError: err.message || "Failed to sync checkout",
         billingLoading: false,
       });
+      return false;
     }
   },
 
