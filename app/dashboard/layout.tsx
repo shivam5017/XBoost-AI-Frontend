@@ -8,8 +8,10 @@ import PageLoader from "@/app/loading";
 const navItems = [
   { label: "Overview", href: "/dashboard" },
   { label: "Features", href: "/dashboard/features" },
+  { label: "Tweet Templates", href: "/dashboard/tweet-templates" },
   { label: "Analytics", href: "/dashboard/analytics" },
   { label: "Billing", href: "/dashboard/billing" },
+  { label: "Admin", href: "/dashboard/admin" },
   { label: "Settings", href: "/dashboard/settings" },
 ];
 

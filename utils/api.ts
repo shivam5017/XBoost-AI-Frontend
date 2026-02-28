@@ -150,6 +150,8 @@ export const api = {
       request<{ success: boolean }>("/ai/mark-posted", { method: "POST" }),
     templates: () =>
       request<Record<string, { label: string; emoji: string; instruction: string }>>("/ai/templates"),
+    templateCatalog: () =>
+      request<TweetTemplate[]>("/ai/templates/catalog"),
     viralHookIntel: (niche: string, samplePosts: string[]) =>
       request<any>("/ai/viral-hook-intel", {
         method: "POST",
@@ -260,6 +262,29 @@ export const api = {
         "/billing/cancel",
         { method: "POST" },
       ),
+  },
+
+  admin: {
+    templates: () => request<TweetTemplate[]>("/admin/templates"),
+    saveTemplate: (payload: Partial<TweetTemplate> & { slug: string; label: string; instruction: string }) =>
+      request<TweetTemplate>("/admin/templates", {
+        method: "POST",
+        body: JSON.stringify(payload),
+      }),
+    removeTemplate: (slug: string) =>
+      request<{ success: boolean }>(`/admin/templates/${slug}`, { method: "DELETE" }),
+    prompts: () => request<PromptConfig[]>("/admin/prompts"),
+    savePrompt: (key: string, value: string, description?: string) =>
+      request<PromptConfig>(`/admin/prompts/${key}`, {
+        method: "PUT",
+        body: JSON.stringify({ value, description }),
+      }),
+    modules: () => request<ModuleConfig[]>("/admin/modules"),
+    saveModule: (featureId: string, payload: Partial<ModuleConfig>) =>
+      request<ModuleConfig>(`/admin/modules/${featureId}`, {
+        method: "PUT",
+        body: JSON.stringify(payload),
+      }),
   },
 
 
@@ -407,4 +432,36 @@ export interface Payment {
   createdAt: string;
   dodoPaymentId?: string | null;
   dodoInvoiceId?: string | null;
+}
+
+export interface TweetTemplate {
+  id: string;
+  slug: string;
+  label: string;
+  emoji: string;
+  instruction: string;
+  structure?: string | null;
+  example?: string | null;
+  category: string;
+  target: "tweet" | "reply" | "both";
+  isActive: boolean;
+  sortOrder: number;
+}
+
+export interface PromptConfig {
+  key: string;
+  value: string;
+  description?: string | null;
+}
+
+export interface ModuleConfig {
+  id: string;
+  name?: string | null;
+  description?: string | null;
+  availability?: "live" | "coming_soon" | null;
+  minimumPlan?: PlanId | null;
+  isVisible: boolean;
+  promptHint?: string | null;
+  inputHelp?: unknown;
+  examples?: unknown;
 }
