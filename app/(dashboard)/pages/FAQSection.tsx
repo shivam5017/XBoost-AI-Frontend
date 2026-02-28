@@ -92,7 +92,7 @@ export default function FAQAndCTASection() {
 
   useEffect(() => {
     const observe = (
-      ref: React.RefObject<HTMLDivElement>,
+      ref: React.RefObject<HTMLDivElement | null>,
       setter: (v: boolean) => void
     ) => {
       const el = ref.current;
