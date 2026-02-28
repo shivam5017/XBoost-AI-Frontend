@@ -38,12 +38,15 @@ export default function RegisterPage() {
   }, [router]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 via-white to-indigo-50 px-6">
-      <div className="w-full max-w-md bg-white/80 backdrop-blur-xl shadow-2xl rounded-3xl p-8 border border-purple-100">
+    <div className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 via-white to-indigo-50 px-6 overflow-hidden">
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(99,102,241,0.06)_1px,transparent_1px),linear-gradient(90deg,rgba(99,102,241,0.06)_1px,transparent_1px)] bg-[size:32px_32px]" />
+      <div className="absolute -top-28 -left-24 w-80 h-80 rounded-full bg-purple-200/30 blur-3xl" />
+      <div className="absolute -bottom-28 -right-24 w-80 h-80 rounded-full bg-indigo-200/30 blur-3xl" />
+      <div className="relative w-full max-w-md bg-white/90 backdrop-blur-xl shadow-2xl rounded-3xl p-8 border border-purple-100">
 
         {/* Header */}
         <div className="text-center mb-8">
-          <h2 className="font-extrabold text-gray-900">
+          <h2 className="font-extrabold text-gray-900 text-2xl">
             Create your account 🚀
           </h2>
           <p className="text-sm text-gray-500 mt-2">

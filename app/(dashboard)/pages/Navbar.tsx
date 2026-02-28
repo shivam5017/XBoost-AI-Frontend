@@ -59,7 +59,12 @@ export default function Navbar() {
 
           {/* Desktop CTAs */}
           <div className="hidden md:flex items-center gap-3">
-           
+            <a
+              href="/auth/login"
+              className="px-4 py-2 rounded-[9px] border border-purple-500/20 text-gray-600 text-[13px] font-medium hover:text-purple-700 hover:border-purple-400/40 transition-all duration-200 whitespace-nowrap"
+            >
+              Login
+            </a>
             <a
               href="#"
               className="px-4 py-2 rounded-[9px] bg-linear-to-r from-[#7c3aed] to-[#6366f1] text-white text-[13px] font-semibold shadow-[0_4px_16px_rgba(124,58,237,0.28)] hover:-translate-y-0.5 hover:shadow-[0_6px_20px_rgba(124,58,237,0.38)] active:translate-y-0 transition-all duration-200 whitespace-nowrap"

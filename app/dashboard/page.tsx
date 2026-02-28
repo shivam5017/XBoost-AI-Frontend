@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useDashboard } from "./context";
-import { api, BillingSubscriptionResponse, DashboardData } from "@/utils/api";
+import { api, BillingSubscriptionResponse } from "@/utils/api";
 
 type TemplateMap = Record<
   string,
@@ -31,7 +31,6 @@ export default function DashboardPage() {
   const { user } = useDashboard();
   const [billing, setBilling] = useState<BillingSubscriptionResponse | null>(null);
   const [templates, setTemplates] = useState<TemplateMap>({});
-  const [analytics, setAnalytics] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -43,11 +42,6 @@ export default function DashboardPage() {
         ]);
         setBilling(billingData);
         setTemplates(templateData);
-
-        if (billingData.plan.features.analytics) {
-          const dash = await api.analytics.dashboard().catch(() => null);
-          setAnalytics(dash);
-        }
       } finally {
         setLoading(false);
       }
@@ -71,14 +65,32 @@ export default function DashboardPage() {
 
   return (
     <div className="max-w-6xl mx-auto py-4 space-y-6">
-      <section className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm">
-        <h1 className="text-2xl font-bold text-gray-800">
-          Welcome back, {user?.username ?? user?.email}
-        </h1>
-        <p className="mt-2 text-sm text-gray-500">
-          Plan: <span className="font-semibold text-indigo-600">{billing?.plan.name ?? "Free"}</span> · Daily goal: {user?.dailyGoal}
-        </p>
-        <p className="mt-1 text-sm text-gray-500">{usageText}</p>
+      <section className="relative overflow-hidden bg-white border border-gray-100 rounded-2xl p-6 shadow-sm">
+        <div className="absolute -top-20 -right-16 w-56 h-56 bg-indigo-100/60 blur-3xl rounded-full" />
+        <div className="absolute -bottom-20 -left-16 w-56 h-56 bg-violet-100/60 blur-3xl rounded-full" />
+        <div className="relative">
+          <h1 className="text-2xl font-bold text-gray-800">
+            Welcome back, {user?.username ?? user?.email}
+          </h1>
+          <p className="mt-2 text-sm text-gray-500">
+            Plan: <span className="font-semibold text-indigo-600">{billing?.plan.name ?? "Free"}</span> · Daily goal: {user?.dailyGoal}
+          </p>
+          <p className="mt-1 text-sm text-gray-500">{usageText}</p>
+          <div className="mt-4 flex flex-wrap gap-2">
+            <a
+              href="#"
+              className="px-4 py-2 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-indigo-500 to-violet-500 hover:opacity-90"
+            >
+              ⚡ Add to Chrome
+            </a>
+            <a
+              href="/dashboard/billing"
+              className="px-4 py-2 rounded-xl text-sm font-medium border border-indigo-200 text-indigo-600 hover:bg-indigo-50"
+            >
+              Manage Plan
+            </a>
+          </div>
+        </div>
       </section>
 
       <section className="grid grid-cols-1 lg:grid-cols-3 gap-4">
@@ -97,11 +109,11 @@ export default function DashboardPage() {
           <div className="text-sm text-gray-500">Tweets generated today</div>
         </div>
         <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
-          <div className="text-xs uppercase tracking-wide text-gray-400 font-semibold mb-2">Streak</div>
-          <div className="text-2xl font-bold text-gray-800">
-            {analytics?.streak.current ?? 0}
+          <div className="text-xs uppercase tracking-wide text-gray-400 font-semibold mb-2">Plan Status</div>
+          <div className="text-2xl font-bold text-gray-800 capitalize">
+            {billing?.subscription.status ?? "active"}
           </div>
-          <div className="text-sm text-gray-500">Current posting streak</div>
+          <div className="text-sm text-gray-500">Billing health and access state</div>
         </div>
       </section>
 
