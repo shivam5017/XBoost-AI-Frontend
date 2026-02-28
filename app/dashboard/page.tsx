@@ -68,6 +68,16 @@ export default function DashboardPage() {
     return `Replies: ${replies} · Tweets: ${tweets}`;
   }, [billing]);
 
+  const liveModules = useMemo(
+    () => (billing?.features ?? []).filter((f) => f.availability === "live"),
+    [billing],
+  );
+
+  const unlockedModules = useMemo(
+    () => liveModules.filter((f) => f.enabled),
+    [liveModules],
+  );
+
   return (
     <div className="max-w-6xl mx-auto py-4 space-y-6 text-[#1a0a2e]">
       <section className="relative overflow-hidden rounded-3xl border border-indigo-100 bg-gradient-to-br from-indigo-50/95 via-white to-violet-50/90 p-7 shadow-[0_18px_60px_rgba(92,100,230,0.12)]">
@@ -152,6 +162,33 @@ export default function DashboardPage() {
             ))}
           </div>
         )}
+      </section>
+
+      <section className="rounded-3xl border border-indigo-100 bg-gradient-to-br from-white to-indigo-50/40 p-6 shadow-[0_12px_38px_rgba(92,100,230,0.07)]">
+        <div className="mb-4 flex items-center justify-between">
+          <h2 className="text-2xl font-bold text-[#111111]">
+            XBoost <span className="text-violet-600">AI</span> Modules
+          </h2>
+          <a href="/dashboard/features" className="text-xs font-semibold text-violet-600 hover:text-violet-700">
+            View all
+          </a>
+        </div>
+        <p className="text-xs text-slate-500 mb-4">
+          {unlockedModules.length} of {liveModules.length} live modules unlocked on your plan.
+        </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          {liveModules.slice(0, 6).map((feature) => (
+            <div key={feature.id} className="rounded-xl border border-indigo-100 bg-white/90 px-4 py-3 flex items-start justify-between gap-3">
+              <div>
+                <p className="text-sm font-semibold text-[#111111]">{feature.name}</p>
+                <p className="text-xs text-slate-500 mt-1">{feature.description}</p>
+              </div>
+              <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold border ${feature.enabled ? "bg-emerald-50 text-emerald-600 border-emerald-100" : "bg-slate-100 text-slate-500 border-slate-200"}`}>
+                {feature.enabled ? "Live" : "Locked"}
+              </span>
+            </div>
+          ))}
+        </div>
       </section>
 
       <section className="rounded-3xl border border-violet-100 bg-gradient-to-br from-white to-violet-50/40 p-6 shadow-[0_12px_38px_rgba(124,58,237,0.07)]">

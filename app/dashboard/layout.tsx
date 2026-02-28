@@ -7,6 +7,7 @@ import PageLoader from "@/app/loading";
 
 const navItems = [
   { label: "Overview", href: "/dashboard" },
+  { label: "Features", href: "/dashboard/features" },
   { label: "Analytics", href: "/dashboard/analytics" },
   { label: "Billing", href: "/dashboard/billing" },
   { label: "Settings", href: "/dashboard/settings" },
@@ -46,8 +47,8 @@ function SidebarBody({ onNavigate }: { onNavigate?: () => void }) {
 
   return (
     <>
-      <h2 className="text-xl font-bold mb-10 bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">
-        XBoost AI
+      <h2 className="text-xl font-bold mb-10 text-[#111111]">
+        XBoost <span className="text-[#7c3aed]">AI</span>
       </h2>
 
       <NavLinks onNavigate={onNavigate} />
@@ -105,8 +106,8 @@ function DesktopSidebar() {
 function MobileTopBar({ onOpen }: { onOpen: () => void }) {
   return (
     <header className="md:hidden sticky top-0 z-30 border-b border-indigo-100 bg-white/90 backdrop-blur-xl px-4 py-3 flex items-center justify-between">
-      <div className="text-base font-bold bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">
-        XBoost AI
+      <div className="text-base font-bold text-[#111111]">
+        XBoost <span className="text-[#7c3aed]">AI</span>
       </div>
       <button
         onClick={onOpen}

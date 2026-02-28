@@ -64,6 +64,14 @@ const FEATURE_ROWS = [
   { key: "replies",   label: "AI Replies",    free: "5 / day", starter: "Unlimited", pro: "Unlimited" },
   { key: "tweets", label: "Tweet Composer", free: "2 / day", starter: "Unlimited", pro: "Unlimited" },
   { key: "analytics", label: "Analytics",      free: false,     starter: false,       pro: true },
+  { key: "viralScore", label: "Viral Score Predictor", free: false, starter: true, pro: true },
+  { key: "bestTime", label: "Best Time to Post", free: false, starter: true, pro: true },
+  { key: "contentPredict", label: "Content Performance Prediction", free: false, starter: true, pro: true },
+  { key: "hook", label: "Viral Hook Intelligence", free: false, starter: true, pro: true },
+  { key: "optimizer", label: "Pre-Launch Optimizer", free: false, starter: true, pro: true },
+  { key: "radar", label: "Niche Trend Radar", free: false, starter: false, pro: true },
+  { key: "strategist", label: "Growth Strategist Mode", free: false, starter: false, pro: true },
+  { key: "brand", label: "Personal Brand Analyzer", free: false, starter: false, pro: true },
 ];
 
 // ── Icons ─────────────────────────────────────────────────────────────────────

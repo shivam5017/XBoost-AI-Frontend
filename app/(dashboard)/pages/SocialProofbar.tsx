@@ -42,7 +42,7 @@ export default function SocialProofBar() {
           transition: "opacity 0.8s ease",
         }}
       >
-        <p className="text-center text-[11px] font-mono font-medium text-gray-300 uppercase tracking-widest mb-8">
+        <p className="text-center text-[11px] font-mono font-semibold text-gray-500 uppercase tracking-widest mb-8">
           Trusted by 12,400+ creators · Featured in
         </p>
 
@@ -57,10 +57,10 @@ export default function SocialProofBar() {
                 transition: `opacity 0.5s ease ${i * 80}ms, transform 0.5s ease ${i * 80}ms`,
               }}
             >
-              <span className="text-[13px] sm:text-[15px] font-bold text-gray-300 hover:text-gray-400 transition-colors tracking-tight">
+              <span className="text-[13px] sm:text-[15px] font-bold text-gray-500 hover:text-gray-700 transition-colors tracking-tight">
                 {l.name}
               </span>
-              <span className="text-[10px] font-mono text-purple-400/70">
+              <span className="text-[10px] font-mono text-violet-500/80">
                 {l.sub}
               </span>
             </div>

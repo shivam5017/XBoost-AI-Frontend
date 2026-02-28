@@ -150,6 +150,71 @@ export const api = {
       request<{ success: boolean }>("/ai/mark-posted", { method: "POST" }),
     templates: () =>
       request<Record<string, { label: string; emoji: string; instruction: string }>>("/ai/templates"),
+    viralHookIntel: (niche: string, samplePosts: string[]) =>
+      request<any>("/ai/viral-hook-intel", {
+        method: "POST",
+        body: JSON.stringify({ niche, samplePosts }),
+      }),
+    preLaunchOptimize: (draft: string, niche: string) =>
+      request<any>("/ai/prelaunch-optimize", {
+        method: "POST",
+        body: JSON.stringify({ draft, niche }),
+      }),
+    trendRadar: (niche: string) =>
+      request<any>("/ai/trend-radar", {
+        method: "POST",
+        body: JSON.stringify({ niche }),
+      }),
+    growthStrategist: (niche: string, goals: string) =>
+      request<any>("/ai/growth-strategist", {
+        method: "POST",
+        body: JSON.stringify({ niche, goals }),
+      }),
+    brandAnalyzer: (profile: string, tweets: string[]) =>
+      request<any>("/ai/brand-analyzer", {
+        method: "POST",
+        body: JSON.stringify({ profile, tweets }),
+      }),
+    threadPro: (topic: string, objective: string) =>
+      request<any>("/ai/thread-pro", {
+        method: "POST",
+        body: JSON.stringify({ topic, objective }),
+      }),
+    leadMagnet: (content: string, audience: string) =>
+      request<any>("/ai/lead-magnet", {
+        method: "POST",
+        body: JSON.stringify({ content, audience }),
+      }),
+    audiencePsychology: (niche: string, audience: string) =>
+      request<any>("/ai/audience-psychology", {
+        method: "POST",
+        body: JSON.stringify({ niche, audience }),
+      }),
+    repurpose: (source: string) =>
+      request<any>("/ai/repurpose", {
+        method: "POST",
+        body: JSON.stringify({ source }),
+      }),
+    monetizationToolkit: (niche: string, audience: string) =>
+      request<any>("/ai/monetization-toolkit", {
+        method: "POST",
+        body: JSON.stringify({ niche, audience }),
+      }),
+    viralScore: (draft: string, niche: string) =>
+      request<any>("/ai/viral-score", {
+        method: "POST",
+        body: JSON.stringify({ draft, niche }),
+      }),
+    bestTimePost: (niche: string) =>
+      request<any>("/ai/best-time-post", {
+        method: "POST",
+        body: JSON.stringify({ niche }),
+      }),
+    contentPredict: (draft: string, niche: string) =>
+      request<any>("/ai/content-predict", {
+        method: "POST",
+        body: JSON.stringify({ draft, niche }),
+      }),
   },
 
   analytics: {
@@ -166,6 +231,7 @@ export const api = {
 
   billing: {
     plans: () => request<Plan[]>("/billing/plans"),
+    features: () => request<FeatureCatalogItem[]>("/billing/features"),
     subscription: () => request<BillingSubscriptionResponse>("/billing/subscription"),
     payments: () => request<Payment[]>("/billing/payments"),
     checkout: (
@@ -268,7 +334,45 @@ export interface Plan {
   features: {
     tweets: boolean;
     analytics: boolean;
+    viralScorePredictor: boolean;
+    bestTimeToPost: boolean;
+    contentPerformancePrediction: boolean;
+    viralHookIntelligence: boolean;
+    preLaunchOptimizer: boolean;
+    nicheTrendRadar: boolean;
+    growthStrategist: boolean;
+    brandAnalyzer: boolean;
+    threadWriterPro: boolean;
+    leadMagnetGenerator: boolean;
+    audiencePsychology: boolean;
+    repurposingEngine: boolean;
+    monetizationToolkit: boolean;
   };
+}
+
+export type FeatureId =
+  | "analytics"
+  | "viralScorePredictor"
+  | "bestTimeToPost"
+  | "contentPerformancePrediction"
+  | "viralHookIntelligence"
+  | "preLaunchOptimizer"
+  | "nicheTrendRadar"
+  | "growthStrategist"
+  | "brandAnalyzer"
+  | "threadWriterPro"
+  | "leadMagnetGenerator"
+  | "audiencePsychology"
+  | "repurposingEngine"
+  | "monetizationToolkit";
+
+export interface FeatureCatalogItem {
+  id: FeatureId;
+  name: string;
+  description: string;
+  availability: "live" | "coming_soon";
+  minimumPlan: PlanId;
+  enabled: boolean;
 }
 
 export interface BillingSubscription {
@@ -290,6 +394,7 @@ export interface BillingUsage {
 export interface BillingSubscriptionResponse {
   subscription: BillingSubscription;
   plan: Plan;
+  features: FeatureCatalogItem[];
   usage: BillingUsage;
 }
 
