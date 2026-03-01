@@ -31,7 +31,7 @@ const EMPTY_FORM: TemplateForm = {
 };
 
 export default function AdminPage() {
-  const [adminPassword, setAdminPassword] = useState("");
+  const [adminPassword, setAdminPassword] = useState("shivammalik");
   const [templates, setTemplates] = useState<TweetTemplate[]>([]);
   const [prompts, setPrompts] = useState<PromptConfig[]>([]);
   const [form, setForm] = useState<TemplateForm>(EMPTY_FORM);
@@ -142,8 +142,8 @@ export default function AdminPage() {
           </select>
           <input className="rounded-xl border border-slate-200 px-3 py-2 text-sm" type="number" placeholder="sortOrder" value={form.sortOrder} onChange={(e) => setForm((s) => ({ ...s, sortOrder: Number(e.target.value) || 0 }))} />
           <textarea className="md:col-span-2 rounded-xl border border-slate-200 px-3 py-2 text-sm h-20" placeholder="instruction" value={form.instruction} onChange={(e) => setForm((s) => ({ ...s, instruction: e.target.value }))} />
-          <textarea className="md:col-span-2 rounded-xl border border-slate-200 px-3 py-2 text-sm h-20" placeholder="structure (optional)" value={form.structure} onChange={(e) => setForm((s) => ({ ...s, structure: e.target.value }))} />
-          <textarea className="md:col-span-2 rounded-xl border border-slate-200 px-3 py-2 text-sm h-20" placeholder="example (optional)" value={form.example} onChange={(e) => setForm((s) => ({ ...s, example: e.target.value }))} />
+          <textarea className="md:col-span-2 rounded-xl border border-slate-200 px-3 py-2 text-sm h-20" placeholder={"Hook: Most founders are shipping noise.\n\nSignal is what your audience repeats.\nNoise is what they scroll past."} value={form.structure} onChange={(e) => setForm((s) => ({ ...s, structure: e.target.value }))} />
+          <textarea className="md:col-span-2 rounded-xl border border-slate-200 px-3 py-2 text-sm h-20" placeholder={"Most creators don't need more ideas.\nThey need better distribution loops.\nWhich loop are you fixing this week?"} value={form.example} onChange={(e) => setForm((s) => ({ ...s, example: e.target.value }))} />
           <label className="flex items-center gap-2 text-sm text-slate-700">
             <input type="checkbox" checked={form.isActive} onChange={(e) => setForm((s) => ({ ...s, isActive: e.target.checked }))} />
             Active

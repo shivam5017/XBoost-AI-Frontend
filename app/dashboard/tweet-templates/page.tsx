@@ -38,6 +38,13 @@ export default function TweetTemplatesPage() {
     });
   }, [templates, query, target]);
 
+  const formatStructure = (tpl: TweetTemplate) => {
+    const raw = (tpl.structure || "").trim();
+    if (!raw) return "";
+    if (/\[[^\]]+\]/.test(raw) && tpl.example) return tpl.example;
+    return raw;
+  };
+
   return (
     <div className="max-w-6xl mx-auto py-4 space-y-5">
       <section className="rounded-3xl border border-indigo-100 bg-gradient-to-br from-indigo-50/90 via-white to-violet-50/90 p-6 shadow-[0_18px_48px_rgba(92,100,230,0.1)]">
@@ -110,10 +117,10 @@ export default function TweetTemplatesPage() {
 
               <p className="mt-3 text-sm text-slate-700 leading-relaxed">{tpl.instruction}</p>
 
-              {tpl.structure && (
+              {formatStructure(tpl) && (
                 <div className="mt-3 rounded-xl border border-slate-200 bg-slate-50 p-3">
                   <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wide">Structure</p>
-                  <pre className="mt-1 whitespace-pre-wrap text-xs text-slate-700 font-medium">{tpl.structure}</pre>
+                  <pre className="mt-1 whitespace-pre-wrap text-xs text-slate-700 font-medium">{formatStructure(tpl)}</pre>
                 </div>
               )}
             </article>
