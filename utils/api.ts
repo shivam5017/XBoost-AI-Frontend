@@ -20,6 +20,7 @@ function resolveApiBase() {
 
 const API_BASE = resolveApiBase();
 const AUTH_TOKEN_KEY = "xboost_auth_token";
+const ADMIN_PASSWORD_KEY = "xboost_admin_password";
 
 function withBase(path: string) {
   if (/^https?:\/\//i.test(path)) return path;
@@ -39,6 +40,16 @@ function setAuthToken(token?: string | null) {
     return;
   }
   window.localStorage.setItem(AUTH_TOKEN_KEY, token);
+}
+
+function getAdminPassword() {
+  if (typeof window === "undefined") return "";
+  return window.localStorage.getItem(ADMIN_PASSWORD_KEY) || "";
+}
+
+function setAdminPassword(password: string) {
+  if (typeof window === "undefined") return;
+  window.localStorage.setItem(ADMIN_PASSWORD_KEY, password);
 }
 
 async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
@@ -152,6 +163,7 @@ export const api = {
       request<Record<string, { label: string; emoji: string; instruction: string }>>("/ai/templates"),
     templateCatalog: () =>
       request<TweetTemplate[]>("/ai/templates/catalog"),
+    tones: () => request<Record<string, string>>("/ai/tones"),
     viralHookIntel: (niche: string, samplePosts: string[]) =>
       request<any>("/ai/viral-hook-intel", {
         method: "POST",
@@ -265,24 +277,40 @@ export const api = {
   },
 
   admin: {
-    templates: () => request<TweetTemplate[]>("/admin/templates"),
+    setPassword: (password: string) => setAdminPassword(password),
+    templates: () =>
+      request<TweetTemplate[]>("/admin/templates", {
+        headers: { "x-admin-password": getAdminPassword() },
+      }),
     saveTemplate: (payload: Partial<TweetTemplate> & { slug: string; label: string; instruction: string }) =>
       request<TweetTemplate>("/admin/templates", {
         method: "POST",
+        headers: { "x-admin-password": getAdminPassword() },
         body: JSON.stringify(payload),
       }),
     removeTemplate: (slug: string) =>
-      request<{ success: boolean }>(`/admin/templates/${slug}`, { method: "DELETE" }),
-    prompts: () => request<PromptConfig[]>("/admin/prompts"),
+      request<{ success: boolean }>(`/admin/templates/${slug}`, {
+        method: "DELETE",
+        headers: { "x-admin-password": getAdminPassword() },
+      }),
+    prompts: () =>
+      request<PromptConfig[]>("/admin/prompts", {
+        headers: { "x-admin-password": getAdminPassword() },
+      }),
     savePrompt: (key: string, value: string, description?: string) =>
       request<PromptConfig>(`/admin/prompts/${key}`, {
         method: "PUT",
+        headers: { "x-admin-password": getAdminPassword() },
         body: JSON.stringify({ value, description }),
       }),
-    modules: () => request<ModuleConfig[]>("/admin/modules"),
+    modules: () =>
+      request<ModuleConfig[]>("/admin/modules", {
+        headers: { "x-admin-password": getAdminPassword() },
+      }),
     saveModule: (featureId: string, payload: Partial<ModuleConfig>) =>
       request<ModuleConfig>(`/admin/modules/${featureId}`, {
         method: "PUT",
+        headers: { "x-admin-password": getAdminPassword() },
         body: JSON.stringify(payload),
       }),
   },
