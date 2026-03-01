@@ -4,6 +4,9 @@ import { useEffect, useMemo, useState } from "react";
 import { useDashboard } from "./context";
 import { api, BillingSubscriptionResponse, RoadmapItem, TweetTemplate } from "@/utils/api";
 
+const CHROME_STORE_URL =
+  "https://chromewebstore.google.com/detail/oiajgdnibolfekknkpogngmmenbddeeb";
+
 export default function DashboardPage() {
   const { user } = useDashboard();
   const [billing, setBilling] = useState<BillingSubscriptionResponse | null>(null);
@@ -85,7 +88,9 @@ export default function DashboardPage() {
 
           <div className="mt-5 flex flex-wrap gap-2.5">
             <a
-              href="#"
+              href={CHROME_STORE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
               className="rounded-xl bg-gradient-to-r from-indigo-500 to-violet-500 px-4 py-2 text-sm font-semibold text-white shadow-[0_8px_24px_rgba(99,102,241,0.35)] transition hover:opacity-90"
             >
               Add to Chrome

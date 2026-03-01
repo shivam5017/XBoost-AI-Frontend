@@ -3,6 +3,9 @@
 import Logo from "@/app/components/Logo";
 import { useEffect, useState } from "react";
 
+const CHROME_STORE_URL =
+  "https://chromewebstore.google.com/detail/oiajgdnibolfekknkpogngmmenbddeeb";
+
 const navLinks = [
   { label: "Features", href: "#features" },
   { label: "How it works", href: "#how-it-works" },
@@ -66,7 +69,9 @@ export default function Navbar() {
               Login
             </a>
             <a
-              href="#"
+              href={CHROME_STORE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
               className="px-4 py-2 rounded-[9px] bg-linear-to-r from-[#7c3aed] to-[#6366f1] text-white text-[13px] font-semibold shadow-[0_4px_16px_rgba(124,58,237,0.28)] hover:-translate-y-0.5 hover:shadow-[0_6px_20px_rgba(124,58,237,0.38)] active:translate-y-0 transition-all duration-200 whitespace-nowrap"
             >
               ⚡ Add to Chrome
@@ -142,7 +147,9 @@ export default function Navbar() {
               Log in
             </a>
             <a
-              href="#"
+              href={CHROME_STORE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
               className="w-full py-3 rounded-xl bg-linear-to-r from-[#7c3aed] to-[#6366f1] text-white text-[14px] font-semibold text-center shadow-[0_4px_16px_rgba(124,58,237,0.28)] transition-all duration-200"
             >
               ⚡ Add to Chrome — It's Free

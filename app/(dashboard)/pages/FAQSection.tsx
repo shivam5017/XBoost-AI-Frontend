@@ -2,6 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 
+const CHROME_STORE_URL =
+  "https://chromewebstore.google.com/detail/oiajgdnibolfekknkpogngmmenbddeeb";
+
 const faqs = [
   {
     q: "Does Xboost work with free X accounts?",
@@ -116,7 +119,7 @@ export default function FAQAndCTASection() {
   return (
     <>
       {/* ── FAQ ── */}
-      <section className="relative bg-[#f8f7ff] overflow-hidden py-24 sm:py-32">
+      <section className="relative bg-[#f8f7ff] overflow-hidden py-24 sm:py-32" id="faq">
         <div className="relative max-w-7xl mx-auto px-6 md:px-12">
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.4fr] gap-16 items-start">
             {/* Left header */}
@@ -144,7 +147,7 @@ export default function FAQAndCTASection() {
               </h2>
               <p className="text-[13px] leading-[1.7] text-gray-400">
                 Still unsure?{" "}
-                <a href="#" className="text-purple-500 hover:text-purple-600 underline underline-offset-2">
+                <a href="mailto:shivammalik962@gmail.com" className="text-purple-500 hover:text-purple-600 underline underline-offset-2">
                   Chat with our team
                 </a>
                 .
@@ -199,12 +202,14 @@ export default function FAQAndCTASection() {
               </p>
 
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                <button className="w-full sm:w-auto px-8 py-4 rounded-xl bg-white text-[#7c3aed] text-[15px] font-bold hover:-translate-y-0.5 hover:shadow-[0_8px_32px_rgba(0,0,0,0.2)] active:translate-y-0 transition-all duration-200">
+                <a
+                  href={CHROME_STORE_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full sm:w-auto px-8 py-4 rounded-xl bg-white text-[#7c3aed] text-[15px] font-bold hover:-translate-y-0.5 hover:shadow-[0_8px_32px_rgba(0,0,0,0.2)] active:translate-y-0 transition-all duration-200 text-center"
+                >
                   ⚡ Add to Chrome
-                </button>
-                <button className="w-full sm:w-auto px-8 py-4 rounded-xl border border-white/25 text-white text-[15px] font-medium hover:border-white/40 hover:bg-white/5 transition-all duration-200">
-                  See it in action →
-                </button>
+                </a>
               </div>
 
               <p className="mt-6 text-[11px] font-mono text-purple-300">

@@ -165,7 +165,7 @@ export default function TestimonialsSection() {
   const col3 = testimonials.filter((_, i) => i % 3 === 2);
 
   return (
-    <section className="relative bg-[#f8f7ff] overflow-hidden py-24 sm:py-32">
+    <section className="relative bg-[#f8f7ff] overflow-hidden py-24 sm:py-32" id="testimonials">
       <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[radial-gradient(ellipse,rgba(124,58,237,0.05),transparent_55%)]" />
 
       <div className="relative max-w-7xl mx-auto px-6 md:px-12">

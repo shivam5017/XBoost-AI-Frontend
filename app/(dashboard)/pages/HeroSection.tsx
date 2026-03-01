@@ -7,6 +7,9 @@ import IMG_SETTINGS from "@/public/settings.png";
 import IMG_COMPOSE from "@/public/create.png";
 import IMG_DASHBOARD from "@/public/dashboard.png";
 
+const CHROME_STORE_URL =
+  "https://chromewebstore.google.com/detail/oiajgdnibolfekknkpogngmmenbddeeb";
+
 export default function HeroSection() {
   const [loaded, setLoaded] = useState(false);
 
@@ -66,7 +69,10 @@ export default function HeroSection() {
           
           {/* CTA */}
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
-            <button
+            <a
+              href={CHROME_STORE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
               className="
       w-full sm:w-auto
       px-5 py-3
@@ -85,27 +91,7 @@ export default function HeroSection() {
     "
             >
               ⚡ Add to Chrome — It's Free
-            </button>
-
-            <button
-              className="
-      w-full sm:w-auto
-      px-5 py-3
-      sm:px-6 sm:py-3.5
-      lg:px-6 lg:py-4
-      text-sm sm:text-[15px] lg:text-base
-      rounded-[10px]
-      border border-purple-500/20
-      text-gray-500 font-medium
-      hover:border-purple-600
-      hover:text-purple-600
-      active:scale-[0.99]
-      transition-all duration-200 ease-out
-      whitespace-nowrap
-    "
-            >
-              See it in action →
-            </button>
+            </a>
           </div>
           {/* Stats */}
           <div className="mt-10 sm:mt-12 pt-6 sm:pt-8 border-t border-purple-500/10">

@@ -111,7 +111,7 @@ export default function HowItWorksSection() {
   }, []);
 
   return (
-    <section className="relative bg-[#f8f7ff] overflow-hidden py-24 sm:py-32">
+    <section className="relative bg-[#f8f7ff] overflow-hidden py-24 sm:py-32" id="how-it-works">
       {/* Ambient — pulled inward so it fully fades before the section edge */}
       <div className="pointer-events-none absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-[radial-gradient(circle_at_50%_50%,rgba(99,102,241,0.06),transparent_65%)]" />
 

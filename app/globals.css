@@ -8,6 +8,10 @@
   --foreground: #1a0a2e;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 /* Body = DM Sans */
 body {
   background: #f8f7ff;
