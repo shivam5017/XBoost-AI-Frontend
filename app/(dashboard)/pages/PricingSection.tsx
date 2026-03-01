@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { api, Plan } from "@/utils/api";
 
-const plans = [
+const staticPlans = [
   {
     id: "free",
     name: "Free",
@@ -70,7 +71,90 @@ const plans = [
   },
 ] as const;
 
-function PricingCard({ plan, index }: { plan: (typeof plans)[number]; index: number }) {
+type DisplayPlan = {
+  id: "free" | "starter" | "pro";
+  name: string;
+  price: string;
+  period: string;
+  desc: string;
+  features: string[];
+  missing: string[];
+  cta: string;
+  highlight: boolean;
+  basePrice?: string;
+  discountBadge?: string;
+};
+
+function toDisplayPlans(plans: Plan[]): DisplayPlan[] {
+  const byId = Object.fromEntries(plans.map((p) => [p.id, p])) as Record<"free" | "starter" | "pro", Plan | undefined>;
+  const free = byId.free;
+  const starter = byId.starter;
+  const pro = byId.pro;
+
+  if (!free || !starter || !pro) {
+    return staticPlans as unknown as DisplayPlan[];
+  }
+
+  const make = (
+    p: Plan,
+    desc: string,
+    cta: string,
+    highlight: boolean,
+    missing: string[],
+  ): DisplayPlan => {
+    const hasDiscount = Boolean(p.pricing?.hasDiscount && p.pricing.basePrice > p.price);
+    const discountBadge = hasDiscount ? `${Math.round(p.pricing?.discountPercent || 0)}% OFF` : undefined;
+    return {
+      id: p.id,
+      name: p.name,
+      price: `$${p.price}`,
+      period: p.price > 0 ? "/mo" : "",
+      desc,
+      features: [
+        p.limits.dailyReplies == null ? "Unlimited AI replies" : `${p.limits.dailyReplies} AI replies/day`,
+        p.limits.dailyTweets == null ? "Unlimited tweet composer" : `Tweet composer ${p.limits.dailyTweets}/day`,
+        "Chrome extension access",
+        ...(p.features.viralScorePredictor ? ["Viral Score Predictor"] : []),
+        ...(p.features.bestTimeToPost ? ["Best Time to Post"] : []),
+        ...(p.features.contentPerformancePrediction ? ["Content Performance Prediction"] : []),
+        ...(p.features.viralHookIntelligence ? ["Viral Hook Intelligence"] : []),
+        ...(p.features.preLaunchOptimizer ? ["Pre-Launch Optimizer"] : []),
+        ...(p.features.analytics ? ["Analytics dashboard (web)"] : []),
+      ],
+      missing,
+      cta,
+      highlight,
+      basePrice: hasDiscount ? `$${p.pricing?.basePrice}` : undefined,
+      discountBadge,
+    };
+  };
+
+  return [
+    make(
+      free,
+      "For trying XBoost with basic daily limits.",
+      "Start Free",
+      false,
+      ["Viral Score Predictor", "Best Time to Post", "Content Performance Prediction", "Viral Hook Intelligence", "Pre-Launch Optimizer", "Analytics dashboard", "Pro creator modules"],
+    ),
+    make(
+      starter,
+      "For creators who need unlimited generation.",
+      "Get Starter",
+      true,
+      ["Analytics dashboard", "Niche Trend Radar", "Growth Strategist Mode"],
+    ),
+    make(
+      pro,
+      "Full product access including analytics on web.",
+      "Get Pro",
+      false,
+      [],
+    ),
+  ];
+}
+
+function PricingCard({ plan, index }: { plan: DisplayPlan; index: number }) {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
 
@@ -115,6 +199,11 @@ function PricingCard({ plan, index }: { plan: (typeof plans)[number]; index: num
           MOST POPULAR
         </div>
       )}
+      {plan.discountBadge && (
+        <div className="absolute -top-3.5 right-4 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-[10px] font-bold text-emerald-600 tracking-wide shadow-sm">
+          {plan.discountBadge}
+        </div>
+      )}
 
       <div className="mb-6">
         <div
@@ -124,24 +213,48 @@ function PricingCard({ plan, index }: { plan: (typeof plans)[number]; index: num
         >
           {plan.name}
         </div>
-        <div className="flex items-end gap-1 mb-2">
-          <span
-            className={`font-extrabold text-4xl sm:text-5xl tracking-tight ${
-              plan.highlight ? "text-white" : "text-[#1a0a2e]"
-            }`}
-          >
-            {plan.price}
-          </span>
-          {plan.period && (
+        {plan.basePrice ? (
+          <div className="flex items-end gap-2 mb-2">
+            <span className={`text-2xl font-semibold line-through ${plan.highlight ? "text-purple-200" : "text-gray-400"}`}>
+              {plan.basePrice}
+            </span>
             <span
-              className={`text-sm mb-1.5 ${
-                plan.highlight ? "text-purple-200" : "text-gray-400"
+              className={`font-extrabold text-4xl sm:text-5xl tracking-tight ${
+                plan.highlight ? "text-white" : "text-[#1a0a2e]"
               }`}
             >
-              {plan.period}
+              {plan.price}
             </span>
-          )}
-        </div>
+            {plan.period && (
+              <span
+                className={`text-sm mb-1.5 ${
+                  plan.highlight ? "text-purple-200" : "text-gray-400"
+                }`}
+              >
+                {plan.period}
+              </span>
+            )}
+          </div>
+        ) : (
+          <div className="flex items-end gap-1 mb-2">
+            <span
+              className={`font-extrabold text-4xl sm:text-5xl tracking-tight ${
+                plan.highlight ? "text-white" : "text-[#1a0a2e]"
+              }`}
+            >
+              {plan.price}
+            </span>
+            {plan.period && (
+              <span
+                className={`text-sm mb-1.5 ${
+                  plan.highlight ? "text-purple-200" : "text-gray-400"
+                }`}
+              >
+                {plan.period}
+              </span>
+            )}
+          </div>
+        )}
         <p
           className={`text-[13px] leading-snug ${
             plan.highlight ? "text-purple-200" : "text-gray-400"
@@ -212,6 +325,7 @@ function PricingCard({ plan, index }: { plan: (typeof plans)[number]; index: num
 export default function PricingSection() {
   const headRef = useRef<HTMLDivElement>(null);
   const [headVisible, setHeadVisible] = useState(false);
+  const [plans, setPlans] = useState<DisplayPlan[]>(staticPlans as unknown as DisplayPlan[]);
 
   useEffect(() => {
     const el = headRef.current;
@@ -227,6 +341,13 @@ export default function PricingSection() {
     );
     obs.observe(el);
     return () => obs.disconnect();
+  }, []);
+
+  useEffect(() => {
+    api.billing
+      .publicPlans()
+      .then((rows) => setPlans(toDisplayPlans(rows)))
+      .catch(() => setPlans(staticPlans as unknown as DisplayPlan[]));
   }, []);
 
   return (

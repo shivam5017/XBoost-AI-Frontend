@@ -168,18 +168,29 @@ function PlanCard({
             {discountLabel}
           </span>
         )}
-        <div className="flex items-baseline gap-1">
-          <span className={`text-3xl font-bold ${isCurrent ? meta.accent : "text-gray-800"}`}>
-            {plan.price === 0 ? "Free" : `$${plan.price}`}
-          </span>
-          {plan.price > 0 && <span className="text-xs text-gray-400">/mo</span>}
-        </div>
-        {hasDiscount && (
-          <div className="text-xs text-gray-400 mt-0.5">
-            <span className="line-through">${plan.pricing?.basePrice}</span>
-            {plan.pricing?.discountCode ? <span className="ml-1">· code {plan.pricing.discountCode}</span> : null}
+        {hasDiscount ? (
+          <div className="flex items-end gap-2">
+            <span className="text-xl font-semibold text-gray-400 line-through">
+              ${plan.pricing?.basePrice}
+            </span>
+            <span className={`text-3xl font-bold ${isCurrent ? meta.accent : "text-gray-800"}`}>
+              ${plan.price}
+            </span>
+            <span className="text-xs text-gray-400 mb-1">/mo</span>
+          </div>
+        ) : (
+          <div className="flex items-baseline gap-1">
+            <span className={`text-3xl font-bold ${isCurrent ? meta.accent : "text-gray-800"}`}>
+              {plan.price === 0 ? "Free" : `$${plan.price}`}
+            </span>
+            {plan.price > 0 && <span className="text-xs text-gray-400">/mo</span>}
           </div>
         )}
+        {hasDiscount && plan.pricing?.discountCode ? (
+          <div className="text-xs text-gray-400 mt-0.5">
+            Offer code: <span className="font-semibold text-emerald-600">{plan.pricing.discountCode}</span>
+          </div>
+        ) : null}
         <div className="text-xs text-gray-400 mt-0.5">{plan.name}</div>
       </div>
 
@@ -398,7 +409,13 @@ export default function BillingPage() {
             <span className={`w-1.5 h-1.5 rounded-full ${meta.dot}`} />
             {currentPlan.name}
             {currentPlan.price > 0 && (
-              <span className="text-gray-400 font-normal">· ${currentPlan.price}/mo</span>
+              currentPlan.pricing?.hasDiscount ? (
+                <span className="text-gray-400 font-normal">
+                  · <span className="line-through">${currentPlan.pricing.basePrice}</span> ${currentPlan.price}/mo
+                </span>
+              ) : (
+                <span className="text-gray-400 font-normal">· ${currentPlan.price}/mo</span>
+              )
             )}
             {currentPlan.pricing?.hasDiscount ? (
               <span className="ml-1 rounded-full bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 text-[10px] font-bold text-emerald-600">

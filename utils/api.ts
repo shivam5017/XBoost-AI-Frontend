@@ -245,6 +245,7 @@ export const api = {
 
   billing: {
     plans: () => request<Plan[]>("/billing/plans"),
+    publicPlans: () => request<Plan[]>("/billing/public/plans"),
     roadmap: () => request<RoadmapItem[]>("/billing/roadmap"),
     features: () => request<FeatureCatalogItem[]>("/billing/features"),
     subscription: () => request<BillingSubscriptionResponse>("/billing/subscription"),
