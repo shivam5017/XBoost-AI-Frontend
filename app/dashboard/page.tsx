@@ -2,30 +2,13 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useDashboard } from "./context";
-import { api, BillingSubscriptionResponse, TweetTemplate } from "@/utils/api";
-
-const UPCOMING = [
-  {
-    title: "Team Workspaces",
-    eta: "Q2 2026",
-    desc: "Shared brand voice, team prompts, and role-based access for multi-creator teams.",
-  },
-  {
-    title: "Auto A/B Variants",
-    eta: "Q2 2026",
-    desc: "Generate multiple post variants with hook scoring before publishing.",
-  },
-  {
-    title: "Competitor Pulse",
-    eta: "Q3 2026",
-    desc: "Track niche leaders and uncover weekly content gaps you can exploit.",
-  },
-];
+import { api, BillingSubscriptionResponse, RoadmapItem, TweetTemplate } from "@/utils/api";
 
 export default function DashboardPage() {
   const { user } = useDashboard();
   const [billing, setBilling] = useState<BillingSubscriptionResponse | null>(null);
   const [templates, setTemplates] = useState<TweetTemplate[]>([]);
+  const [roadmap, setRoadmap] = useState<RoadmapItem[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -35,8 +18,10 @@ export default function DashboardPage() {
           api.billing.subscription(),
           api.ai.templateCatalog().catch(() => [] as TweetTemplate[]),
         ]);
+        const roadmapData = await api.billing.roadmap().catch(() => [] as RoadmapItem[]);
         setBilling(billingData);
         setTemplates(templateData.filter((t) => t.isActive));
+        setRoadmap(roadmapData.filter((r) => r.isActive));
       } finally {
         setLoading(false);
       }
@@ -78,6 +63,7 @@ export default function DashboardPage() {
     () => liveModules.filter((f) => f.enabled),
     [liveModules],
   );
+  const roadmapCards = useMemo(() => roadmap.slice(0, 3), [roadmap]);
 
   return (
     <div className="max-w-6xl mx-auto py-4 space-y-6 text-[#1a0a2e]">
@@ -212,13 +198,23 @@ export default function DashboardPage() {
         </div>
 
         <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
-          {UPCOMING.map((item) => (
-            <div key={item.title} className="rounded-xl border border-indigo-100 bg-white/90 p-4 shadow-[0_8px_20px_rgba(92,100,230,0.04)]">
-              <p className="text-[11px] font-semibold uppercase tracking-wide text-indigo-500">{item.eta}</p>
-              <p className="mt-1 text-sm font-semibold text-[#1a0a2e]">{item.title}</p>
-              <p className="mt-1 text-xs leading-relaxed text-slate-600">{item.desc}</p>
+          {roadmapCards.map((item) => (
+            <div key={item.key} className="rounded-xl border border-indigo-100 bg-white/90 p-4 shadow-[0_8px_20px_rgba(92,100,230,0.04)]">
+              <div className="flex items-center justify-between gap-2">
+                <p className="text-[11px] font-semibold uppercase tracking-wide text-indigo-500">{item.eta || "Soon"}</p>
+                <span className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded-full border ${item.status === "active" ? "bg-emerald-50 text-emerald-600 border-emerald-200" : "bg-violet-50 text-violet-600 border-violet-200"}`}>
+                  {item.status === "active" ? "Live" : "Upcoming"}
+                </span>
+              </div>
+              <p className="mt-1 text-sm font-semibold text-[#1a0a2e]">{item.name}</p>
+              <p className="mt-1 text-xs leading-relaxed text-slate-600">{item.description}</p>
             </div>
           ))}
+          {!roadmapCards.length && (
+            <div className="rounded-xl border border-indigo-100 bg-white/90 p-4 text-xs text-slate-500">
+              No upcoming roadmap items configured yet.
+            </div>
+          )}
         </div>
       </section>
     </div>

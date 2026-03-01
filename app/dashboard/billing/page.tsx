@@ -144,6 +144,10 @@ function PlanCard({
     label: r.label,
     value: r[plan.id as keyof typeof r],
   }));
+  const hasDiscount = Boolean(plan.pricing?.hasDiscount && plan.pricing?.basePrice > plan.price);
+  const discountLabel = hasDiscount
+    ? `${Math.round(plan.pricing?.discountPercent || 0)}% OFF`
+    : null;
 
   return (
     <div className={`relative rounded-2xl p-5 border transition-all duration-200 ${
@@ -159,12 +163,23 @@ function PlanCard({
 
       {/* Price */}
       <div className="mb-4">
+        {discountLabel && (
+          <span className="inline-flex items-center mb-2 rounded-full bg-emerald-50 border border-emerald-200 px-2 py-0.5 text-[10px] font-bold tracking-wide text-emerald-600">
+            {discountLabel}
+          </span>
+        )}
         <div className="flex items-baseline gap-1">
           <span className={`text-3xl font-bold ${isCurrent ? meta.accent : "text-gray-800"}`}>
             {plan.price === 0 ? "Free" : `$${plan.price}`}
           </span>
           {plan.price > 0 && <span className="text-xs text-gray-400">/mo</span>}
         </div>
+        {hasDiscount && (
+          <div className="text-xs text-gray-400 mt-0.5">
+            <span className="line-through">${plan.pricing?.basePrice}</span>
+            {plan.pricing?.discountCode ? <span className="ml-1">· code {plan.pricing.discountCode}</span> : null}
+          </div>
+        )}
         <div className="text-xs text-gray-400 mt-0.5">{plan.name}</div>
       </div>
 
@@ -385,6 +400,11 @@ export default function BillingPage() {
             {currentPlan.price > 0 && (
               <span className="text-gray-400 font-normal">· ${currentPlan.price}/mo</span>
             )}
+            {currentPlan.pricing?.hasDiscount ? (
+              <span className="ml-1 rounded-full bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 text-[10px] font-bold text-emerald-600">
+                {Math.round(currentPlan.pricing.discountPercent)}% OFF
+              </span>
+            ) : null}
           </div>
         )}
       </div>

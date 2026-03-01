@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, useMemo, useState } from "react";
-import { api, PromptConfig, TweetTemplate } from "@/utils/api";
+import { api, PromptConfig, RoadmapItem, TweetTemplate } from "@/utils/api";
 import { toast } from "sonner";
 
 type TemplateForm = {
@@ -35,6 +35,16 @@ export default function AdminPage() {
   const [templates, setTemplates] = useState<TweetTemplate[]>([]);
   const [prompts, setPrompts] = useState<PromptConfig[]>([]);
   const [form, setForm] = useState<TemplateForm>(EMPTY_FORM);
+  const [roadmap, setRoadmap] = useState<RoadmapItem[]>([]);
+  const [roadmapForm, setRoadmapForm] = useState({
+    key: "",
+    name: "",
+    description: "",
+    eta: "",
+    status: "upcoming" as "upcoming" | "active",
+    isActive: true,
+    sortOrder: 0,
+  });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
@@ -50,6 +60,8 @@ export default function AdminPage() {
       const [tpls, prm] = await Promise.all([api.admin.templates(), api.admin.prompts()]);
       setTemplates(tpls);
       setPrompts(prm);
+      const roadmapRows = await api.admin.roadmap();
+      setRoadmap(roadmapRows);
     } catch (error: any) {
       toast.error(error?.message || "Admin auth failed");
     } finally {
@@ -95,6 +107,43 @@ export default function AdminPage() {
       toast.success(`${key} updated`);
     } catch (error: any) {
       toast.error(error?.message || `Failed to update ${key}`);
+    }
+  };
+
+  const onSaveRoadmap = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!roadmapForm.key.trim() || !roadmapForm.name.trim() || !roadmapForm.description.trim()) return;
+    try {
+      api.admin.setPassword(adminPassword);
+      await api.admin.saveRoadmap({
+        ...roadmapForm,
+        key: roadmapForm.key.trim().toLowerCase().replace(/\s+/g, "_"),
+        eta: roadmapForm.eta || undefined,
+      });
+      toast.success("Roadmap item saved");
+      setRoadmapForm({
+        key: "",
+        name: "",
+        description: "",
+        eta: "",
+        status: "upcoming",
+        isActive: true,
+        sortOrder: 0,
+      });
+      await loadAdminData();
+    } catch (error: any) {
+      toast.error(error?.message || "Failed to save roadmap item");
+    }
+  };
+
+  const onDeleteRoadmap = async (key: string) => {
+    try {
+      api.admin.setPassword(adminPassword);
+      await api.admin.removeRoadmap(key);
+      setRoadmap((prev) => prev.filter((item) => item.key !== key));
+      toast.success("Roadmap item deleted");
+    } catch (error: any) {
+      toast.error(error?.message || "Failed to delete roadmap item");
     }
   };
 
@@ -181,6 +230,46 @@ export default function AdminPage() {
         <div className="mt-4 space-y-3">
           {prompts.map((prompt) => (
             <PromptRow key={prompt.key} prompt={prompt} onSave={onSavePrompt} />
+          ))}
+        </div>
+      </section>
+
+      <section className="rounded-2xl border border-indigo-100 bg-white p-5">
+        <h2 className="text-lg font-bold text-[#111111]">Roadmap / Upcoming</h2>
+        <p className="mt-1 text-xs text-slate-500">
+          Manage upcoming and active roadmap items shown on dashboard/features pages.
+        </p>
+        <form onSubmit={onSaveRoadmap} className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-3">
+          <input className="rounded-xl border border-slate-200 px-3 py-2 text-sm" placeholder="key" value={roadmapForm.key} onChange={(e) => setRoadmapForm((s) => ({ ...s, key: e.target.value }))} />
+          <input className="rounded-xl border border-slate-200 px-3 py-2 text-sm" placeholder="name" value={roadmapForm.name} onChange={(e) => setRoadmapForm((s) => ({ ...s, name: e.target.value }))} />
+          <input className="rounded-xl border border-slate-200 px-3 py-2 text-sm" placeholder="eta (e.g. Q3 2026)" value={roadmapForm.eta} onChange={(e) => setRoadmapForm((s) => ({ ...s, eta: e.target.value }))} />
+          <input className="rounded-xl border border-slate-200 px-3 py-2 text-sm" type="number" placeholder="sortOrder" value={roadmapForm.sortOrder} onChange={(e) => setRoadmapForm((s) => ({ ...s, sortOrder: Number(e.target.value) || 0 }))} />
+          <select className="rounded-xl border border-slate-200 px-3 py-2 text-sm" value={roadmapForm.status} onChange={(e) => setRoadmapForm((s) => ({ ...s, status: e.target.value as "upcoming" | "active" }))}>
+            <option value="upcoming">upcoming</option>
+            <option value="active">active</option>
+          </select>
+          <label className="flex items-center gap-2 text-sm text-slate-700">
+            <input type="checkbox" checked={roadmapForm.isActive} onChange={(e) => setRoadmapForm((s) => ({ ...s, isActive: e.target.checked }))} />
+            Visible
+          </label>
+          <textarea className="md:col-span-2 rounded-xl border border-slate-200 px-3 py-2 text-sm h-20" placeholder="description" value={roadmapForm.description} onChange={(e) => setRoadmapForm((s) => ({ ...s, description: e.target.value }))} />
+          <div className="md:col-span-2">
+            <button className="rounded-xl bg-indigo-600 px-4 py-2 text-sm font-semibold text-white">Save Roadmap Item</button>
+          </div>
+        </form>
+
+        <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-3">
+          {roadmap.map((item) => (
+            <div key={item.key} className="rounded-xl border border-slate-200 p-3">
+              <div className="flex items-start justify-between gap-2">
+                <div>
+                  <p className="text-sm font-semibold text-[#111111]">{item.name}</p>
+                  <p className="text-[11px] text-slate-400">{item.key} · {item.status} · {item.eta || "No ETA"}</p>
+                </div>
+                <button onClick={() => onDeleteRoadmap(item.key)} className="text-xs text-red-500">Delete</button>
+              </div>
+              <p className="mt-2 text-xs text-slate-600">{item.description}</p>
+            </div>
           ))}
         </div>
       </section>

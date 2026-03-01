@@ -245,6 +245,7 @@ export const api = {
 
   billing: {
     plans: () => request<Plan[]>("/billing/plans"),
+    roadmap: () => request<RoadmapItem[]>("/billing/roadmap"),
     features: () => request<FeatureCatalogItem[]>("/billing/features"),
     subscription: () => request<BillingSubscriptionResponse>("/billing/subscription"),
     payments: () => request<Payment[]>("/billing/payments"),
@@ -313,6 +314,29 @@ export const api = {
         headers: { "x-admin-password": getAdminPassword() },
         body: JSON.stringify(payload),
       }),
+    roadmap: () =>
+      request<RoadmapItem[]>("/admin/roadmap", {
+        headers: { "x-admin-password": getAdminPassword() },
+      }),
+    saveRoadmap: (payload: {
+      key: string;
+      name: string;
+      description: string;
+      eta?: string;
+      status?: "upcoming" | "active";
+      isActive?: boolean;
+      sortOrder?: number;
+    }) =>
+      request<RoadmapItem>("/admin/roadmap", {
+        method: "POST",
+        headers: { "x-admin-password": getAdminPassword() },
+        body: JSON.stringify(payload),
+      }),
+    removeRoadmap: (key: string) =>
+      request<{ success: boolean }>(`/admin/roadmap/${key}`, {
+        method: "DELETE",
+        headers: { "x-admin-password": getAdminPassword() },
+      }),
   },
 
 
@@ -380,6 +404,15 @@ export interface Plan {
   id: PlanId;
   name: string;
   price: number;
+  currency?: string;
+  pricing?: {
+    basePrice: number;
+    finalPrice: number;
+    discountPercent: number;
+    discountCode?: string | null;
+    discountName?: string | null;
+    hasDiscount: boolean;
+  };
   limits: {
     dailyReplies: number | null;
     dailyTweets: number | null;
@@ -492,4 +525,15 @@ export interface ModuleConfig {
   promptHint?: string | null;
   inputHelp?: unknown;
   examples?: unknown;
+}
+
+export interface RoadmapItem {
+  id: string;
+  key: string;
+  name: string;
+  description: string;
+  eta?: string | null;
+  status: "upcoming" | "active";
+  isActive: boolean;
+  sortOrder: number;
 }
