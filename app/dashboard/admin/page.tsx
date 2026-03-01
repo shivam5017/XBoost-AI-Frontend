@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { FormEvent, useMemo, useState } from "react";
 import { api, PromptConfig, TweetTemplate } from "@/utils/api";
 import { toast } from "sonner";
 
@@ -31,6 +31,7 @@ const EMPTY_FORM: TemplateForm = {
 };
 
 export default function AdminPage() {
+  const [adminPassword, setAdminPassword] = useState("shivammalik");
   const [templates, setTemplates] = useState<TweetTemplate[]>([]);
   const [prompts, setPrompts] = useState<PromptConfig[]>([]);
   const [form, setForm] = useState<TemplateForm>(EMPTY_FORM);
@@ -45,6 +46,7 @@ export default function AdminPage() {
   const loadAdminData = async () => {
     setLoading(true);
     try {
+      api.admin.setPassword(adminPassword);
       const [tpls, prm] = await Promise.all([api.admin.templates(), api.admin.prompts()]);
       setTemplates(tpls);
       setPrompts(prm);
@@ -55,15 +57,12 @@ export default function AdminPage() {
     }
   };
 
-  useEffect(() => {
-    loadAdminData().catch(() => {});
-  }, []);
-
   const onSaveTemplate = async (e: FormEvent) => {
     e.preventDefault();
     if (!canSubmit) return;
     setSaving(true);
     try {
+      api.admin.setPassword(adminPassword);
       await api.admin.saveTemplate({
         ...form,
         slug: form.slug.trim().toLowerCase().replace(/\s+/g, "_"),
@@ -80,6 +79,7 @@ export default function AdminPage() {
 
   const onDeleteTemplate = async (slug: string) => {
     try {
+      api.admin.setPassword(adminPassword);
       await api.admin.removeTemplate(slug);
       setTemplates((prev) => prev.filter((item) => item.slug !== slug));
       toast.success("Template deleted");
@@ -90,6 +90,7 @@ export default function AdminPage() {
 
   const onSavePrompt = async (key: string, value: string, description?: string | null) => {
     try {
+      api.admin.setPassword(adminPassword);
       await api.admin.savePrompt(key, value, description || undefined);
       toast.success(`${key} updated`);
     } catch (error: any) {
@@ -103,14 +104,21 @@ export default function AdminPage() {
         <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-indigo-500">Admin Console</p>
         <h1 className="mt-2 text-3xl font-extrabold text-[#111111]">Template + Prompt Control</h1>
         <p className="mt-2 text-sm text-slate-600">
-          Restricted to your admin email. Manage live templates and tone/prompt config from here.
+          Restricted to your admin email. Enter admin password here (default: <span className="font-semibold">shivammalik</span>) and click Unlock.
         </p>
-        <div className="mt-4">
+        <div className="mt-4 flex gap-2">
+          <input
+            type="password"
+            value={adminPassword}
+            onChange={(e) => setAdminPassword(e.target.value)}
+            placeholder="Admin password"
+            className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-violet-300"
+          />
           <button
             onClick={loadAdminData}
             className="rounded-xl bg-violet-600 px-4 py-2 text-sm font-semibold text-white"
           >
-            Refresh
+            Unlock
           </button>
         </div>
       </section>

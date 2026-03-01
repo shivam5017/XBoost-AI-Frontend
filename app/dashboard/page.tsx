@@ -2,12 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useDashboard } from "./context";
-import { api, BillingSubscriptionResponse } from "@/utils/api";
-
-type TemplateMap = Record<
-  string,
-  { label: string; emoji: string; instruction: string }
->;
+import { api, BillingSubscriptionResponse, TweetTemplate } from "@/utils/api";
 
 const UPCOMING = [
   {
@@ -30,7 +25,7 @@ const UPCOMING = [
 export default function DashboardPage() {
   const { user } = useDashboard();
   const [billing, setBilling] = useState<BillingSubscriptionResponse | null>(null);
-  const [templates, setTemplates] = useState<TemplateMap>({});
+  const [templates, setTemplates] = useState<TweetTemplate[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -38,10 +33,10 @@ export default function DashboardPage() {
       try {
         const [billingData, templateData] = await Promise.all([
           api.billing.subscription(),
-          api.ai.templates().catch(() => ({})),
+          api.ai.templateCatalog().catch(() => [] as TweetTemplate[]),
         ]);
         setBilling(billingData);
-        setTemplates(templateData);
+        setTemplates(templateData.filter((t) => t.isActive));
       } finally {
         setLoading(false);
       }
@@ -50,7 +45,13 @@ export default function DashboardPage() {
     load();
   }, []);
 
-  const templateList = useMemo(() => Object.entries(templates), [templates]);
+  const templateList = useMemo(() => templates.slice(0, 6), [templates]);
+  const asTweet = (t: TweetTemplate) => {
+    const structure = (t.structure || "").replace(/\\n/g, "\n").trim();
+    const example = (t.example || "").replace(/\\n/g, "\n").trim();
+    const instruction = (t.instruction || "").replace(/\\n/g, "\n").trim();
+    return example || structure || instruction;
+  };
 
   const usageText = useMemo(() => {
     if (!billing) return "Loading usage…";
@@ -152,13 +153,26 @@ export default function DashboardPage() {
           <p className="text-sm text-slate-500">No templates available yet.</p>
         ) : (
           <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-            {templateList.map(([id, t]) => (
-              <div key={id} className="rounded-xl border border-indigo-100 bg-white/85 p-4 shadow-[0_8px_20px_rgba(92,100,230,0.04)]">
-                <p className="text-sm font-semibold text-[#1a0a2e]">
-                  {t.emoji} {t.label}
-                </p>
-                <p className="mt-1 text-xs leading-relaxed text-slate-600">{t.instruction}</p>
-              </div>
+            {templateList.map((t) => (
+              <article key={t.slug} className="rounded-2xl border border-indigo-100 bg-white p-4 shadow-[0_8px_20px_rgba(92,100,230,0.06)]">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-violet-500 text-white text-xs font-bold flex items-center justify-center">
+                      XB
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-[#111111]">XBoost AI</p>
+                      <p className="text-[11px] text-slate-400">@xboostai · {t.emoji} {t.label}</p>
+                    </div>
+                  </div>
+                  <span className="text-[10px] rounded-full border border-indigo-100 bg-indigo-50 px-2 py-0.5 font-semibold text-indigo-600">
+                    {t.target}
+                  </span>
+                </div>
+                <pre className="mt-3 whitespace-pre-wrap text-sm leading-relaxed text-slate-700 font-sans">
+                  {asTweet(t)}
+                </pre>
+              </article>
             ))}
           </div>
         )}
