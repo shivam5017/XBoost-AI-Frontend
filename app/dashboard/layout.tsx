@@ -11,17 +11,25 @@ const navItems = [
   { label: "Tweet Templates", href: "/dashboard/tweet-templates" },
   { label: "Analytics", href: "/dashboard/analytics" },
   { label: "Billing", href: "/dashboard/billing" },
-  // { label: "Admin", href: "/dashboard/admin" },
   { label: "Settings", href: "/dashboard/settings" },
 ];
 
-function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
+function NavLinks({
+  onNavigate,
+  isAdmin,
+}: {
+  onNavigate?: () => void;
+  isAdmin: boolean;
+}) {
   const pathname = usePathname();
   const router = useRouter();
+  const items = isAdmin
+    ? [...navItems, { label: "Admin", href: "/dashboard/admin" }]
+    : navItems;
 
   return (
     <nav className="flex flex-col gap-2">
-      {navItems.map((item) => {
+      {items.map((item) => {
         const active =
           item.href === "/dashboard"
             ? pathname === "/dashboard"
@@ -49,6 +57,7 @@ function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
 
 function SidebarBody({ onNavigate }: { onNavigate?: () => void }) {
   const { user, logout } = useDashboard();
+  const isAdmin = (user?.email || "").toLowerCase() === "shivammalik962@gmail.com";
 
   return (
     <>
@@ -56,7 +65,7 @@ function SidebarBody({ onNavigate }: { onNavigate?: () => void }) {
         XBoost <span className="text-[#7c3aed]">AI</span>
       </h2>
 
-      <NavLinks onNavigate={onNavigate} />
+      <NavLinks onNavigate={onNavigate} isAdmin={isAdmin} />
 
       <div className="mt-auto flex flex-col gap-3 pt-10">
         <div className="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-indigo-50 border border-indigo-100">
