@@ -22,6 +22,18 @@ const API_BASE = resolveApiBase();
 const AUTH_TOKEN_KEY = "xboost_auth_token";
 const ADMIN_PASSWORD_KEY = "xboost_admin_password";
 
+export class ApiError extends Error {
+  status: number;
+  data?: any;
+
+  constructor(message: string, status: number, data?: any) {
+    super(message);
+    this.name = "ApiError";
+    this.status = status;
+    this.data = data;
+  }
+}
+
 function withBase(path: string) {
   if (/^https?:\/\//i.test(path)) return path;
   const normalizedPath = path.startsWith("/") ? path : `/${path}`;
@@ -68,7 +80,7 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
 
   if (!res.ok) {
     const err = await res.json().catch(() => ({ error: "Request failed" }));
-    throw new Error(err.error || "Request failed");
+    throw new ApiError(err.error || "Request failed", res.status, err);
   }
 
   return res.json();

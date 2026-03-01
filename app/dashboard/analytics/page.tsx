@@ -12,7 +12,7 @@ import {
   CartesianGrid,
 } from "recharts";
 import { useStore } from "@/store/index";
-import { api } from "@/utils/api";
+import { api, ApiError } from "@/utils/api";
 import { toast } from "sonner";
 
 type Period = "day" | "week" | "month";
@@ -58,12 +58,12 @@ function PeriodSwitcher({
   onChange: (p: Period) => void;
 }) {
   return (
-    <div className="flex gap-1 bg-gray-100 rounded-lg p-1">
+    <div className="grid w-full grid-cols-3 gap-1 bg-gray-100 rounded-lg p-1 sm:w-auto">
       {PERIODS.map((p) => (
         <button
           key={p.id}
           onClick={() => onChange(p.id)}
-          className={`px-3 py-1 rounded-md text-xs font-semibold transition-all duration-200 ${
+          className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-all duration-200 ${
             value === p.id
               ? "bg-white text-indigo-600 shadow-sm"
               : "text-gray-400 hover:text-gray-600"
@@ -95,7 +95,7 @@ function ChartCard({
 }) {
   return (
     <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
-      <div className="flex justify-between items-start mb-4">
+      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <div className="flex items-center gap-2">
             <div className="text-sm font-bold text-gray-800">{title}</div>
@@ -126,7 +126,9 @@ function ChartCard({
             <div className="text-xs text-gray-400 mt-0.5">{subtitle}</div>
           )}
         </div>
-        <PeriodSwitcher value={period} onChange={onPeriodChange} />
+        <div className="w-full sm:w-auto">
+          <PeriodSwitcher value={period} onChange={onPeriodChange} />
+        </div>
       </div>
       {loading ? (
         <div className="h-40 rounded-xl border border-indigo-100 bg-indigo-50/40 p-3">
@@ -173,8 +175,11 @@ export default function AnalyticsPage() {
   const [activityData, setActivityData] = useState<ActivityPoint[]>([]);
   const [streakData, setStreakData] = useState<StreakPoint[]>([]);
   const [loading, setLoading] = useState(false);
+  const [accessChecked, setAccessChecked] = useState(false);
+  const [hasAnalyticsAccess, setHasAnalyticsAccess] = useState(true);
 
   const fetchActivity = async (p: Period) => {
+    if (!hasAnalyticsAccess) return;
     setLoading(true);
     try {
       const data = await api.analytics.activity(p);
@@ -197,21 +202,44 @@ export default function AnalyticsPage() {
               ),
         })),
       );
-    } catch (e) {
+    } catch (e: any) {
+      if (e instanceof ApiError && e.status === 403) {
+        setHasAnalyticsAccess(false);
+        return;
+      }
       console.error(e);
-      toast.error("Failed to load analytics data");
+      toast.error(e?.message || "Failed to load analytics data");
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    loadDashboard();
-    loadWeekly();
+    const bootstrap = async () => {
+      try {
+        const billing = await api.billing.subscription();
+        const allowed = Boolean(billing?.plan?.features?.analytics);
+        setHasAnalyticsAccess(allowed);
+        if (!allowed) return;
+        await Promise.all([loadDashboard(), loadWeekly()]);
+      } catch (e: any) {
+        if (e instanceof ApiError && e.status === 403) {
+          setHasAnalyticsAccess(false);
+        } else {
+          toast.error(e?.message || "Failed to load analytics");
+        }
+      } finally {
+        setAccessChecked(true);
+      }
+    };
+
+    bootstrap();
   }, []);
   useEffect(() => {
-    fetchActivity(period);
-  }, [period]);
+    if (accessChecked && hasAnalyticsAccess) {
+      fetchActivity(period);
+    }
+  }, [period, accessChecked, hasAnalyticsAccess]);
 
   const totals = dashboard?.totals;
   const streak = dashboard?.streak;
@@ -224,8 +252,40 @@ export default function AnalyticsPage() {
 
   return (
     <div className="min-h-full p-5 bg-gradient-to-br from-violet-50 via-white to-indigo-50 flex flex-col gap-4">
+      {!accessChecked ? (
+        <div className="rounded-2xl border border-indigo-100 bg-white p-6 shadow-sm">
+          <div className="h-5 w-40 rounded-md shimmer mb-3" />
+          <div className="h-20 w-full rounded-xl shimmer" />
+        </div>
+      ) : !hasAnalyticsAccess ? (
+        <div className="rounded-2xl border border-violet-100 bg-white p-6 shadow-sm">
+          <div className="inline-flex items-center gap-2 rounded-full border border-violet-200 bg-violet-50 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-violet-600">
+            <svg className="w-3.5 h-3.5" viewBox="0 0 16 16" fill="none">
+              <path
+                d="M5.5 7V5.5a2.5 2.5 0 115 0V7M4.5 7h7a1 1 0 011 1v4a1 1 0 01-1 1h-7a1 1 0 01-1-1V8a1 1 0 011-1z"
+                stroke="currentColor"
+                strokeWidth="1.4"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+            Pro Only
+          </div>
+          <h1 className="mt-3 text-xl font-bold text-gray-800">Analytics Dashboard</h1>
+          <p className="mt-1 text-sm text-gray-500">
+            Analytics is available on the Pro plan. Upgrade to unlock growth charts, streak analytics, and reach insights.
+          </p>
+          <a
+            href="/dashboard/billing"
+            className="mt-4 inline-flex rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 px-4 py-2 text-sm font-semibold text-white"
+          >
+            Upgrade to Pro
+          </a>
+        </div>
+      ) : (
+        <>
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-base font-bold text-gray-800">Analytics</h1>
           <p className="text-xs text-gray-400 mt-0.5">
@@ -233,11 +293,13 @@ export default function AnalyticsPage() {
           </p>
         </div>
         {/* Global period switcher */}
-        <PeriodSwitcher value={period} onChange={setPeriod} />
+        <div className="w-full sm:w-auto">
+          <PeriodSwitcher value={period} onChange={setPeriod} />
+        </div>
       </div>
 
       {/* Summary */}
-      <div className="grid grid-cols-2 gap-2.5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
         <StatBadge
           label="Total Replies"
           value={totals?.replies?.toString() ?? "0"}
@@ -525,7 +587,7 @@ export default function AnalyticsPage() {
           <div className="text-sm font-bold text-gray-800 mb-3">
             Weekly Summary
           </div>
-          <div className="grid grid-cols-2 gap-2.5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
             <StatBadge
               label="Total Replies"
               value={weeklyReport.totalReplies.toString()}
@@ -552,6 +614,8 @@ export default function AnalyticsPage() {
             />
           </div>
         </div>
+      )}
+        </>
       )}
     </div>
   );
