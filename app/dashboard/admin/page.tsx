@@ -31,7 +31,7 @@ const EMPTY_FORM: TemplateForm = {
 };
 
 export default function AdminPage() {
-  const [adminPassword, setAdminPassword] = useState(""); //add in future shivammalik
+  const [adminPassword, setAdminPassword] = useState("shivammalik"); //add in future shivammalik
   const [templates, setTemplates] = useState<TweetTemplate[]>([]);
   const [prompts, setPrompts] = useState<PromptConfig[]>([]);
   const [form, setForm] = useState<TemplateForm>(EMPTY_FORM);
