@@ -50,8 +50,8 @@ export default function RegisterPage() {
 
         {/* Header */}
         <div className="text-center mb-8">
-          <h2 className="font-extrabold text-gray-900 text-xl sm:text-2xl whitespace-nowrap">
-            Create your account 🚀
+          <h2 className="font-extrabold tracking-tight text-gray-800 text-lg sm:text-xl">
+            Create
           </h2>
           <p className="text-sm text-gray-500 mt-2">
             Start growing with XBoost AI

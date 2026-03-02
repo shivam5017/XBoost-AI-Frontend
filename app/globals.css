@@ -67,7 +67,7 @@ h1, h2, h3 {
 
 h1 {
   line-height: 1.05;
-  font-size: clamp(24px, 3vw, 36px);
+  font-size: clamp(17px, 1.8vw, 22px);
 }
 
 h2 {
@@ -108,20 +108,25 @@ html[data-theme="dark"] [class*="bg-white/"] {
 }
 
 html[data-theme="dark"] .bg-gray-50,
+html[data-theme="dark"] .bg-gray-100,
 html[data-theme="dark"] .bg-indigo-50,
 html[data-theme="dark"] .bg-violet-50,
+html[data-theme="dark"] .bg-purple-50,
 html[data-theme="dark"] .bg-slate-50 {
   background-color: var(--surface-muted) !important;
 }
 
+html[data-theme="dark"] [class*="bg-gray-100/"],
 html[data-theme="dark"] [class*="bg-indigo-50/"],
 html[data-theme="dark"] [class*="bg-violet-50/"],
+html[data-theme="dark"] [class*="bg-purple-50/"],
 html[data-theme="dark"] [class*="bg-blue-50/"],
 html[data-theme="dark"] [class*="bg-slate-50/"] {
   background-color: color-mix(in srgb, var(--surface-muted) 90%, transparent) !important;
 }
 
 html[data-theme="dark"] .text-gray-800,
+html[data-theme="dark"] .text-gray-900,
 html[data-theme="dark"] .text-gray-700,
 html[data-theme="dark"] .text-slate-700,
 html[data-theme="dark"] .text-\[\#111111\],
@@ -173,6 +178,7 @@ html[data-theme="dark"] .via-white {
 
 html[data-theme="dark"] .from-violet-50,
 html[data-theme="dark"] .from-indigo-50,
+html[data-theme="dark"] .from-purple-50,
 html[data-theme="dark"] .from-blue-50 {
   --tw-gradient-from: #141426 var(--tw-gradient-from-position) !important;
   --tw-gradient-to: rgb(20 20 38 / 0) var(--tw-gradient-to-position) !important;
@@ -187,6 +193,7 @@ html[data-theme="dark"] .to-blue-50 {
 
 html[data-theme="dark"] [class*="from-violet-50/"],
 html[data-theme="dark"] [class*="from-indigo-50/"],
+html[data-theme="dark"] [class*="from-purple-50/"],
 html[data-theme="dark"] [class*="from-blue-50/"],
 html[data-theme="dark"] [class*="from-white/"] {
   --tw-gradient-from: #141426 var(--tw-gradient-from-position) !important;
@@ -199,6 +206,27 @@ html[data-theme="dark"] [class*="to-indigo-50/"],
 html[data-theme="dark"] [class*="to-blue-50/"],
 html[data-theme="dark"] [class*="to-white/"] {
   --tw-gradient-to: #101017 var(--tw-gradient-to-position) !important;
+}
+
+html[data-theme="dark"] [class*="bg-indigo-200/"],
+html[data-theme="dark"] [class*="bg-violet-200/"],
+html[data-theme="dark"] [class*="bg-purple-200/"] {
+  background-color: rgba(99, 102, 241, 0.16) !important;
+}
+
+html[data-theme="dark"] .hover\:bg-gray-50:hover,
+html[data-theme="dark"] .hover\:bg-gray-100:hover,
+html[data-theme="dark"] .hover\:bg-gray-200:hover,
+html[data-theme="dark"] .hover\:bg-indigo-50:hover,
+html[data-theme="dark"] .hover\:bg-violet-50:hover {
+  background-color: color-mix(in srgb, var(--surface-muted) 92%, transparent) !important;
+}
+
+html[data-theme="dark"] .hover\:text-indigo-600:hover,
+html[data-theme="dark"] .hover\:text-indigo-700:hover,
+html[data-theme="dark"] .hover\:text-violet-600:hover,
+html[data-theme="dark"] .hover\:text-violet-700:hover {
+  color: #c4b5fd !important;
 }
 
 .dashboard-shell {

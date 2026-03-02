@@ -234,10 +234,6 @@ export default function HeroSection() {
             </div>
           </div>
 
-          {/* Edge masks */}
-          <div className="absolute -bottom-16 -left-10 -right-10 h-50 bg-linear-to-t from-[#f8f7ff] via-[#f8f7ff]/60 to-transparent pointer-events-none" />
-          <div className="absolute -right-14 -top-10 -bottom-10 w-45 bg-linear-to-l from-[#f8f7ff] via-[#f8f7ff]/50 to-transparent pointer-events-none" />
-          <div className="absolute -left-14 -top-14 w-50 h-50 bg-[radial-gradient(circle_at_0%_0%,rgba(248,247,255,0.97)_30%,transparent_70%)] pointer-events-none" />
         </div>
       </div>
     </section>

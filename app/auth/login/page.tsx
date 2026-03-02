@@ -48,8 +48,8 @@ export default function LoginPage() {
 
         {/* Header */}
         <div className="text-center mb-8">
-          <h2 className="font-extrabold text-gray-900 text-xl sm:text-2xl whitespace-nowrap">
-            Login to <span className="text-purple-600">XBoost AI</span>
+          <h2 className="font-extrabold tracking-tight text-gray-800 text-lg sm:text-xl">
+            Login to <span className="text-violet-600">XBoost AI</span>
           </h2>
           <p className="text-sm text-gray-500 mt-2">
             Welcome back. Let’s grow today.

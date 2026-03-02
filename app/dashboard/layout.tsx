@@ -53,12 +53,12 @@ function ThemeToggle({
     >
       {theme === "dark" ? (
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <path d="M12 3a6 6 0 1 0 9 9 9 9 0 1 1-9-9z" />
+          <circle cx="12" cy="12" r="4" />
+          <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
         </svg>
       ) : (
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <circle cx="12" cy="12" r="4" />
-          <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+          <path d="M12 3a6 6 0 1 0 9 9 9 9 0 1 1-9-9z" />
         </svg>
       )}
     </button>
@@ -193,7 +193,7 @@ function MobileTopBar({
   onToggleTheme: () => void;
 }) {
   return (
-    <header className="md:hidden sticky top-0 z-30 border-b border-indigo-100 bg-white/90 backdrop-blur-xl px-4 py-3 flex items-center justify-between">
+    <header className={`md:hidden sticky top-0 z-30 border-b border-indigo-100 backdrop-blur-xl px-4 py-3 flex items-center justify-between ${theme === "dark" ? "bg-[#101017]/95" : "bg-white/90"}`}>
       <div className="text-base font-bold text-[#111111]">
         XBoost <span className="text-[#7c3aed]">AI</span>
       </div>
@@ -202,7 +202,7 @@ function MobileTopBar({
         <button
           onClick={onOpen}
           aria-label="Open dashboard navigation"
-          className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-indigo-200 bg-white text-indigo-600 hover:bg-indigo-50"
+          className={`inline-flex h-10 w-10 items-center justify-center rounded-xl border border-indigo-200 text-indigo-600 ${theme === "dark" ? "bg-[#181826]" : "bg-white hover:bg-indigo-50"}`}
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <line x1="3" y1="6" x2="21" y2="6" />
@@ -215,7 +215,7 @@ function MobileTopBar({
   );
 }
 
-function MobileDrawer({ open, onClose }: { open: boolean; onClose: () => void }) {
+function MobileDrawer({ open, onClose, theme }: { open: boolean; onClose: () => void; theme: ThemeMode }) {
   return (
     <>
       <div
@@ -226,7 +226,9 @@ function MobileDrawer({ open, onClose }: { open: boolean; onClose: () => void })
       />
 
       <aside
-        className={`md:hidden fixed inset-y-0 right-0 z-50 w-72 max-w-[86vw] border-l border-indigo-100 bg-white p-6 shadow-2xl transform transition-transform duration-300 ease-out ${
+        className={`md:hidden fixed inset-y-0 right-0 z-50 w-72 max-w-[86vw] border-l border-indigo-100 p-6 shadow-2xl transform transition-transform duration-300 ease-out ${
+          theme === "dark" ? "bg-[#101017]" : "bg-white"
+        } ${
           open ? "translate-x-0" : "translate-x-full"
         }`}
       >
@@ -297,7 +299,7 @@ function LayoutInner({ children }: { children: ReactNode }) {
           </svg>
         </button>
       )}
-      <MobileDrawer open={mobileOpen} onClose={() => setMobileOpen(false)} />
+      <MobileDrawer open={mobileOpen} onClose={() => setMobileOpen(false)} theme={theme} />
     </div>
   );
 }

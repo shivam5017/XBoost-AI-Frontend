@@ -248,29 +248,31 @@ export default function DashboardSettingsPage() {
             </div>
           ) : null}
 
-          <div className="flex gap-2">
+          <div className="flex flex-col sm:flex-row gap-2">
               <select
                 value={provider}
                 onChange={(e) => setProvider(e.target.value)}
-                className="border border-gray-200 rounded-xl px-3 py-2.5 text-sm bg-gray-50"
+                className="w-full sm:w-52 border border-gray-200 rounded-xl px-3 py-2.5 text-sm bg-gray-50"
               >
                 {PROVIDERS.map((p) => (
                   <option key={p.id} value={p.id}>{p.label}</option>
                 ))}
               </select>
-              <input
-                type={showKey ? "text" : "password"}
-                value={apiKey}
-                onChange={(e) => setApiKey(e.target.value)}
-                placeholder={`${provider.toUpperCase()} API key...`}
-                className="flex-1 border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 outline-none bg-gray-50 transition"
-              />
-              <button
-                onClick={() => setShowKey(!showKey)}
-                className="px-3 py-2.5 border border-gray-200 rounded-xl hover:bg-gray-50 text-sm transition"
-              >
-                {showKey ? "🙈" : "👁"}
-              </button>
+              <div className="flex w-full min-w-0 gap-2">
+                <input
+                  type={showKey ? "text" : "password"}
+                  value={apiKey}
+                  onChange={(e) => setApiKey(e.target.value)}
+                  placeholder={`${provider.toUpperCase()} API key...`}
+                  className="min-w-0 w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 outline-none bg-gray-50 transition"
+                />
+                <button
+                  onClick={() => setShowKey(!showKey)}
+                  className="shrink-0 px-3 py-2.5 border border-gray-200 rounded-xl hover:bg-gray-50 text-sm transition"
+                >
+                  {showKey ? "🙈" : "👁"}
+                </button>
+              </div>
           </div>
 
           {keyError && (
