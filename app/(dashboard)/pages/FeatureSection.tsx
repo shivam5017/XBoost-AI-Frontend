@@ -1,69 +1,27 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { api, type FeatureCatalogItem, type FeatureId } from "@/utils/api";
 
-const features = [
-  {
-    icon: "🚀",
-    title: "AI Growth Strategist Mode",
-    desc: "Get a personalized 30-day content roadmap, niche pillars, competitor breakdown, and viral pattern guidance.",
-    tag: "Pro",
-  },
-  {
-    icon: "🪝",
-    title: "Viral Hook Intelligence Engine",
-    desc: "Analyze hook patterns from top posts, generate A/B hook variants, and score hook probability before posting.",
-    tag: "Starter+",
-  },
-  {
-    icon: "🧬",
-    title: "AI Personal Brand Analyzer",
-    desc: "Audit voice consistency, positioning clarity, and profile strength with bio rewrite and monetization suggestions.",
-    tag: "Pro",
-  },
-  {
-    icon: "📊",
-    title: "Pre-Launch Optimizer",
-    desc: "Predict likely engagement range, suggest best posting window, and refine CTA and final phrasing pre-publish.",
-    tag: "Starter+",
-  },
-  {
-    icon: "🧵",
-    title: "AI Thread Writer Pro+",
-    desc: "Generate high-retention story arcs, contrarian angles, layered CTAs, and conversion-aware closing blocks.",
-    tag: "Pro",
-  },
-  {
-    icon: "🧲",
-    title: "Auto Lead Magnet Generator",
-    desc: "Convert winning threads into checklist/PDF/Notion lead magnets to compound growth into owned assets.",
-    tag: "Pro",
-  },
-  {
-    icon: "🧠",
-    title: "Audience Psychology Insights",
-    desc: "Discover emotional and authority triggers that increase saves, follows, and intent-driven engagement.",
-    tag: "Pro",
-  },
-  {
-    icon: "♻️",
-    title: "Content Repurposing Engine",
-    desc: "Repurpose X content to LinkedIn posts, newsletters, carousel scripts, and short-video concepts in one flow.",
-    tag: "Pro",
-  },
-  {
-    icon: "📈",
-    title: "Niche Trend Radar",
-    desc: "Detect breakout conversations in your lane early, so your content lands before saturation hits.",
-    tag: "Pro",
-  },
-  {
-    icon: "💸",
-    title: "Creator Monetization Toolkit",
-    desc: "Build offer ideas, pricing strategy, launch calendar, and high-performing sales content from one workspace.",
-    tag: "Pro",
-  },
-];
+const EXTENSION_URL =
+  "https://chromewebstore.google.com/detail/pohpmpfbaenppabefjbgjfdhncnkfpml";
+
+const ICONS: Record<FeatureId, string> = {
+  analytics: "📈",
+  viralScorePredictor: "🔮",
+  bestTimeToPost: "⏰",
+  contentPerformancePrediction: "📊",
+  viralHookIntelligence: "🪝",
+  preLaunchOptimizer: "🧪",
+  nicheTrendRadar: "📡",
+  growthStrategist: "🚀",
+  brandAnalyzer: "🧬",
+  threadWriterPro: "🧵",
+  leadMagnetGenerator: "🧲",
+  audiencePsychology: "🧠",
+  repurposingEngine: "♻️",
+  monetizationToolkit: "💸",
+};
 
 function FeatureCard({
   icon,
@@ -127,6 +85,7 @@ function FeatureCard({
 export default function FeaturesSection() {
   const headRef = useRef<HTMLDivElement>(null);
   const [headVisible, setHeadVisible] = useState(false);
+  const [features, setFeatures] = useState<FeatureCatalogItem[]>([]);
 
   useEffect(() => {
     const el = headRef.current;
@@ -142,6 +101,13 @@ export default function FeaturesSection() {
     );
     obs.observe(el);
     return () => obs.disconnect();
+  }, []);
+
+  useEffect(() => {
+    api.billing
+      .publicFeatures()
+      .then((rows) => setFeatures(rows.filter((f) => f.id !== "analytics" && f.availability === "live")))
+      .catch(() => setFeatures([]));
   }, []);
 
   return (
@@ -176,8 +142,26 @@ export default function FeaturesSection() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {features.map((f, i) => (
-            <FeatureCard key={f.title} {...f} index={i} />
+            <FeatureCard
+              key={f.id}
+              icon={ICONS[f.id] || "✨"}
+              title={f.name}
+              desc={f.description}
+              tag={f.minimumPlan === "pro" ? "Pro" : f.minimumPlan === "starter" ? "Starter+" : "Free"}
+              index={i}
+            />
           ))}
+        </div>
+
+        <div className="mt-8 flex justify-center">
+          <a
+            href={EXTENSION_URL}
+            target="_blank"
+            rel="noreferrer"
+            className="rounded-xl bg-gradient-to-r from-[#101014] to-[#2a2a36] border border-violet-500/40 px-5 py-2.5 text-sm font-semibold text-white hover:opacity-95"
+          >
+            Add To Chrome
+          </a>
         </div>
       </div>
     </section>

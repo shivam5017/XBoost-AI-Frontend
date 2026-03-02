@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, useMemo, useState } from "react";
-import { api, PromptConfig, RoadmapItem, TweetTemplate } from "@/utils/api";
+import { api, ModuleConfig, PromptConfig, RoadmapItem, TweetTemplate } from "@/utils/api";
 import { toast } from "sonner";
 
 type TemplateForm = {
@@ -34,6 +34,7 @@ export default function AdminPage() {
   const [adminPassword, setAdminPassword] = useState(""); //add in future shivammalik
   const [templates, setTemplates] = useState<TweetTemplate[]>([]);
   const [prompts, setPrompts] = useState<PromptConfig[]>([]);
+  const [modules, setModules] = useState<ModuleConfig[]>([]);
   const [form, setForm] = useState<TemplateForm>(EMPTY_FORM);
   const [roadmap, setRoadmap] = useState<RoadmapItem[]>([]);
   const [roadmapForm, setRoadmapForm] = useState({
@@ -57,9 +58,10 @@ export default function AdminPage() {
     setLoading(true);
     try {
       api.admin.setPassword(adminPassword);
-      const [tpls, prm] = await Promise.all([api.admin.templates(), api.admin.prompts()]);
+      const [tpls, prm, mod] = await Promise.all([api.admin.templates(), api.admin.prompts(), api.admin.modules()]);
       setTemplates(tpls);
       setPrompts(prm);
+      setModules(mod);
       const roadmapRows = await api.admin.roadmap();
       setRoadmap(roadmapRows);
     } catch (error: any) {
@@ -107,6 +109,17 @@ export default function AdminPage() {
       toast.success(`${key} updated`);
     } catch (error: any) {
       toast.error(error?.message || `Failed to update ${key}`);
+    }
+  };
+
+  const onSaveModule = async (featureId: string, payload: Partial<ModuleConfig>) => {
+    try {
+      api.admin.setPassword(adminPassword);
+      await api.admin.saveModule(featureId, payload);
+      toast.success(`${featureId} updated`);
+      await loadAdminData();
+    } catch (error: any) {
+      toast.error(error?.message || `Failed to update ${featureId}`);
     }
   };
 
@@ -236,6 +249,18 @@ export default function AdminPage() {
       </section>
 
       <section className="rounded-2xl border border-indigo-100 bg-white p-5">
+        <h2 className="text-lg font-bold text-[#111111]">Module Catalog</h2>
+        <p className="mt-1 text-xs text-slate-500">
+          These values drive module cards and module workspaces across web and extension.
+        </p>
+        <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-3">
+          {modules.map((module) => (
+            <ModuleRow key={module.id} module={module} onSave={onSaveModule} />
+          ))}
+        </div>
+      </section>
+
+      <section className="rounded-2xl border border-indigo-100 bg-white p-5">
         <h2 className="text-lg font-bold text-[#111111]">Roadmap / Upcoming</h2>
         <p className="mt-1 text-xs text-slate-500">
           Manage upcoming and active roadmap items shown on dashboard/features pages.
@@ -312,6 +337,81 @@ function PromptRow({
         value={value}
         onChange={(e) => setValue(e.target.value)}
       />
+    </div>
+  );
+}
+
+function ModuleRow({
+  module,
+  onSave,
+}: {
+  module: ModuleConfig;
+  onSave: (featureId: string, payload: Partial<ModuleConfig>) => Promise<void>;
+}) {
+  const [name, setName] = useState(module.name || "");
+  const [description, setDescription] = useState(module.description || "");
+  const [promptHint, setPromptHint] = useState(module.promptHint || "");
+  const [availability, setAvailability] = useState<"live" | "coming_soon">(module.availability || "live");
+  const [minimumPlan, setMinimumPlan] = useState<"free" | "starter" | "pro">((module.minimumPlan || "free") as "free" | "starter" | "pro");
+  const [isVisible, setIsVisible] = useState(module.isVisible);
+  const [saving, setSaving] = useState(false);
+
+  return (
+    <div className="rounded-xl border border-slate-200 p-3">
+      <p className="text-xs font-semibold text-slate-500 mb-2">{module.id}</p>
+      <div className="space-y-2">
+        <input
+          className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="Module name"
+        />
+        <textarea
+          className="w-full rounded-lg border border-slate-200 px-3 py-2 text-xs h-16"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          placeholder="Description"
+        />
+        <textarea
+          className="w-full rounded-lg border border-slate-200 px-3 py-2 text-xs h-14"
+          value={promptHint}
+          onChange={(e) => setPromptHint(e.target.value)}
+          placeholder="Prompt hint shown in workspace"
+        />
+      </div>
+      <div className="mt-2 grid grid-cols-3 gap-2">
+        <select className="rounded-lg border border-slate-200 px-2 py-2 text-xs" value={availability} onChange={(e) => setAvailability(e.target.value as "live" | "coming_soon")}>
+          <option value="live">live</option>
+          <option value="coming_soon">coming_soon</option>
+        </select>
+        <select className="rounded-lg border border-slate-200 px-2 py-2 text-xs" value={minimumPlan} onChange={(e) => setMinimumPlan(e.target.value as "free" | "starter" | "pro")}>
+          <option value="free">free</option>
+          <option value="starter">starter</option>
+          <option value="pro">pro</option>
+        </select>
+        <label className="flex items-center justify-center gap-1 rounded-lg border border-slate-200 text-xs text-slate-600">
+          <input type="checkbox" checked={isVisible} onChange={(e) => setIsVisible(e.target.checked)} />
+          visible
+        </label>
+      </div>
+      <button
+        disabled={saving}
+        onClick={async () => {
+          setSaving(true);
+          await onSave(module.id, {
+            name,
+            description,
+            promptHint,
+            availability,
+            minimumPlan,
+            isVisible,
+          });
+          setSaving(false);
+        }}
+        className="mt-3 rounded-lg bg-slate-900 px-3 py-1.5 text-xs font-semibold text-white disabled:opacity-60"
+      >
+        {saving ? "Saving..." : "Save Module"}
+      </button>
     </div>
   );
 }

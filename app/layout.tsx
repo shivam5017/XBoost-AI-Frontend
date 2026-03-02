@@ -54,6 +54,19 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                var t = localStorage.getItem("xboost_theme");
+                var theme = t === "dark" ? "dark" : "light";
+                document.documentElement.setAttribute("data-theme", theme);
+              } catch (_) {}
+            `,
+          }}
+        />
+      </head>
       <body
         className={`
     bg-[#f8f7ff]/80

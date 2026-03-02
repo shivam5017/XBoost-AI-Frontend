@@ -129,6 +129,11 @@ export const api = {
         method: "DELETE",
         body: JSON.stringify({ provider }),
       }),
+    changePassword: (currentPassword: string, newPassword: string) =>
+      request<{ success: boolean }>("/auth/change-password", {
+        method: "POST",
+        body: JSON.stringify({ currentPassword, newPassword }),
+      }),
     logout: async () => {
       const data = await request<{ success: boolean }>("/auth/logout", { method: "POST" });
       setAuthToken(null);
@@ -258,6 +263,7 @@ export const api = {
   billing: {
     plans: () => request<Plan[]>("/billing/plans"),
     publicPlans: () => request<Plan[]>("/billing/public/plans"),
+    publicFeatures: () => request<FeatureCatalogItem[]>("/billing/public/features"),
     roadmap: () => request<RoadmapItem[]>("/billing/roadmap"),
     features: () => request<FeatureCatalogItem[]>("/billing/features"),
     subscription: () => request<BillingSubscriptionResponse>("/billing/subscription"),
@@ -472,6 +478,9 @@ export interface FeatureCatalogItem {
   availability: "live" | "coming_soon";
   minimumPlan: PlanId;
   enabled: boolean;
+  promptHint?: string | null;
+  inputHelp?: unknown;
+  examples?: unknown;
 }
 
 export interface BillingSubscription {

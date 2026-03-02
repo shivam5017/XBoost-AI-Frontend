@@ -21,6 +21,21 @@ type FormState = {
 
 type ExamplePreset = { label: string; values: Partial<FormState> };
 
+function readInputHelp(value: unknown): Partial<Record<keyof FormState, string>> {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return {};
+  return value as Partial<Record<keyof FormState, string>>;
+}
+
+function readExamples(value: unknown): ExamplePreset[] {
+  if (!Array.isArray(value)) return [];
+  return value
+    .map((item: any) => ({
+      label: typeof item?.label === "string" ? item.label : "",
+      values: item?.values && typeof item.values === "object" ? item.values : {},
+    }))
+    .filter((item) => item.label);
+}
+
 const VALID_FEATURE_IDS = new Set<FeatureId>([
   "viralScorePredictor",
   "bestTimeToPost",
@@ -291,8 +306,14 @@ export default function FeatureDetailPage() {
   }, [featureId]);
 
   const meta = useMemo(() => FEATURE_UI_META[featureId], [featureId]);
-  const inputHelp = INPUT_HELP[featureId] || {};
-  const examples = useMemo(() => buildExamples(featureId), [featureId]);
+  const inputHelp = useMemo(
+    () => ({ ...(INPUT_HELP[featureId] || {}), ...readInputHelp(feature?.inputHelp) }),
+    [featureId, feature?.inputHelp],
+  );
+  const examples = useMemo(() => {
+    const dbExamples = readExamples(feature?.examples);
+    return dbExamples.length ? dbExamples : buildExamples(featureId);
+  }, [feature?.examples, featureId]);
 
   const runFeature = async () => {
     if (!feature?.enabled) {
@@ -379,7 +400,7 @@ export default function FeatureDetailPage() {
             <div>
               <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-violet-500">Module Workspace</p>
               <h1 className="mt-2 text-2xl font-extrabold text-[#111111]">{meta?.hero || featureId}</h1>
-              <p className="mt-1 text-sm text-slate-600">{meta?.prompt || feature?.description}</p>
+              <p className="mt-1 text-sm text-slate-600">{feature?.promptHint || meta?.prompt || feature?.description}</p>
             </div>
             <Link href="/dashboard/features" className="text-xs font-semibold text-violet-600 hover:text-violet-700">← Back to Modules</Link>
           </div>

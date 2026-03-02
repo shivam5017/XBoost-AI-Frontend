@@ -35,6 +35,10 @@ export default function DashboardSettingsPage() {
   const [keySaving, setKeySaving] = useState(false);
   const [keySaved, setKeySaved] = useState(false);
   const [keyError, setKeyError] = useState("");
+  const [theme, setTheme] = useState<"light" | "dark">("light");
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [passwordSaving, setPasswordSaving] = useState(false);
   const providerLink = PROVIDER_LINKS[provider] ?? PROVIDER_LINKS.openai;
 
   useEffect(() => {
@@ -51,6 +55,15 @@ export default function DashboardSettingsPage() {
     };
     fetchProfile();
   }, [router]);
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem("xboost_theme");
+      const value = stored === "dark" ? "dark" : "light";
+      setTheme(value);
+      document.documentElement.setAttribute("data-theme", value);
+    } catch {}
+  }, []);
 
   const handleSaveGoal = async () => {
     try {
@@ -113,6 +126,28 @@ export default function DashboardSettingsPage() {
     }
   };
 
+  const handleChangePassword = async () => {
+    if (!currentPassword.trim() || !newPassword.trim()) {
+      toast.error("Enter current and new password");
+      return;
+    }
+    if (newPassword.length < 8) {
+      toast.error("New password must be at least 8 characters");
+      return;
+    }
+    setPasswordSaving(true);
+    try {
+      await api.auth.changePassword(currentPassword, newPassword);
+      setCurrentPassword("");
+      setNewPassword("");
+      toast.success("Password updated successfully");
+    } catch (err: any) {
+      toast.error(err?.message || "Failed to update password");
+    } finally {
+      setPasswordSaving(false);
+    }
+  };
+
   if (loading) return <PageLoader />;
   if (!user) return null;
 
@@ -123,6 +158,30 @@ export default function DashboardSettingsPage() {
       <div>
         <h1 className="text-base font-bold text-gray-800">Settings</h1>
         <p className="text-xs text-gray-400 mt-0.5">Manage your account and preferences</p>
+      </div>
+
+      {/* Account Card */}
+      <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
+        <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Appearance</div>
+        <div className="flex gap-2">
+          {(["light", "dark"] as const).map((mode) => (
+            <button
+              key={mode}
+              onClick={() => {
+                setTheme(mode);
+                document.documentElement.setAttribute("data-theme", mode);
+                try { localStorage.setItem("xboost_theme", mode); } catch {}
+              }}
+              className={`px-3 py-2 rounded-xl text-sm border transition ${
+                theme === mode
+                  ? "border-indigo-400 bg-indigo-50 text-indigo-600"
+                  : "border-gray-200 bg-white text-gray-500 hover:bg-gray-50"
+              }`}
+            >
+              {mode[0].toUpperCase() + mode.slice(1)}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Account Card */}
@@ -248,6 +307,34 @@ export default function DashboardSettingsPage() {
           <a href="/privacy-policy" className="text-indigo-500 hover:text-indigo-600">Privacy Policy</a>
           <a href="/terms-of-service" className="text-indigo-500 hover:text-indigo-600">Terms</a>
           <a href="/cookie-policy" className="text-indigo-500 hover:text-indigo-600">Cookie Policy</a>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
+        <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Security</div>
+        <p className="text-xs text-gray-400 mb-3">Change your account password.</p>
+        <div className="space-y-2">
+          <input
+            type="password"
+            value={currentPassword}
+            onChange={(e) => setCurrentPassword(e.target.value)}
+            placeholder="Current password"
+            className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 outline-none bg-gray-50 transition"
+          />
+          <input
+            type="password"
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+            placeholder="New password (min 8 chars)"
+            className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 outline-none bg-gray-50 transition"
+          />
+          <button
+            onClick={handleChangePassword}
+            disabled={passwordSaving}
+            className="w-full py-2.5 rounded-xl text-sm font-semibold bg-gradient-to-r from-indigo-500 to-violet-500 text-white hover:opacity-90 disabled:opacity-50"
+          >
+            {passwordSaving ? "Updating..." : "Update Password"}
+          </button>
         </div>
       </div>
 

@@ -68,6 +68,19 @@ function SidebarBody({ onNavigate }: { onNavigate?: () => void }) {
       <NavLinks onNavigate={onNavigate} isAdmin={isAdmin} />
 
       <div className="mt-auto flex flex-col gap-3 pt-10">
+        <button
+          onClick={() => {
+            const el = document.documentElement;
+            const current = el.getAttribute("data-theme") === "dark" ? "dark" : "light";
+            const next = current === "dark" ? "light" : "dark";
+            el.setAttribute("data-theme", next);
+            try { localStorage.setItem("xboost_theme", next); } catch {}
+          }}
+          className="px-4 py-2.5 rounded-xl text-sm font-medium border border-indigo-200 text-indigo-600 hover:bg-indigo-50 transition-all"
+        >
+          Toggle Theme
+        </button>
+
         <div className="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-indigo-50 border border-indigo-100">
           <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-violet-500 flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
             {(user?.username ?? user?.email ?? "U")[0].toUpperCase()}
@@ -123,17 +136,32 @@ function MobileTopBar({ onOpen }: { onOpen: () => void }) {
       <div className="text-base font-bold text-[#111111]">
         XBoost <span className="text-[#7c3aed]">AI</span>
       </div>
-      <button
-        onClick={onOpen}
-        aria-label="Open dashboard navigation"
-        className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-indigo-200 bg-white text-indigo-600 hover:bg-indigo-50"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <line x1="3" y1="6" x2="21" y2="6" />
-          <line x1="3" y1="12" x2="21" y2="12" />
-          <line x1="3" y1="18" x2="21" y2="18" />
-        </svg>
-      </button>
+      <div className="flex items-center gap-2">
+        <button
+          onClick={() => {
+            const el = document.documentElement;
+            const current = el.getAttribute("data-theme") === "dark" ? "dark" : "light";
+            const next = current === "dark" ? "light" : "dark";
+            el.setAttribute("data-theme", next);
+            try { localStorage.setItem("xboost_theme", next); } catch {}
+          }}
+          aria-label="Toggle theme"
+          className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-indigo-200 bg-white text-indigo-600 hover:bg-indigo-50"
+        >
+          ◐
+        </button>
+        <button
+          onClick={onOpen}
+          aria-label="Open dashboard navigation"
+          className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-indigo-200 bg-white text-indigo-600 hover:bg-indigo-50"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="3" y1="6" x2="21" y2="6" />
+            <line x1="3" y1="12" x2="21" y2="12" />
+            <line x1="3" y1="18" x2="21" y2="18" />
+          </svg>
+        </button>
+      </div>
     </header>
   );
 }
@@ -182,6 +210,14 @@ function LayoutInner({ children }: { children: ReactNode }) {
   useEffect(() => {
     setMobileOpen(false);
   }, [pathname]);
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem("xboost_theme");
+      const theme = stored === "dark" ? "dark" : "light";
+      document.documentElement.setAttribute("data-theme", theme);
+    } catch {}
+  }, []);
 
   if (loading) return <PageLoader />;
 

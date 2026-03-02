@@ -6,16 +6,31 @@
 :root {
   --background: #f8f7ff;
   --foreground: #1a0a2e;
+  --surface: #ffffff;
+  --surface-muted: #f5f3ff;
+  --text: #111111;
+  --text-soft: #475569;
+  --border: #e5e7eb;
 }
 
 html {
   scroll-behavior: smooth;
 }
 
+html[data-theme="dark"] {
+  --background: #09090b;
+  --foreground: #f5f3ff;
+  --surface: #101017;
+  --surface-muted: #181826;
+  --text: #f3f4f6;
+  --text-soft: #cbd5e1;
+  --border: #27272a;
+}
+
 /* Body = DM Sans */
 body {
-  background: #f8f7ff;
-  color: #1a0a2e;
+  background: var(--background);
+  color: var(--foreground);
   font-family: var(--font-dm-sans), system-ui, sans-serif;
   min-height: 100vh;
 }
@@ -48,7 +63,7 @@ h1, h2, h3 {
 
 h1 {
   line-height: 1.05;
-  font-size: clamp(40px, 5vw, 64px);
+  font-size: clamp(30px, 4.2vw, 52px);
 }
 
 .bg-grid-mask {
@@ -70,4 +85,42 @@ h1 {
     black 35%,
     transparent 100%
   );
+}
+
+html[data-theme="dark"] .bg-white {
+  background-color: var(--surface) !important;
+}
+
+html[data-theme="dark"] .bg-gray-50,
+html[data-theme="dark"] .bg-indigo-50,
+html[data-theme="dark"] .bg-violet-50,
+html[data-theme="dark"] .bg-slate-50 {
+  background-color: var(--surface-muted) !important;
+}
+
+html[data-theme="dark"] .text-gray-800,
+html[data-theme="dark"] .text-gray-700,
+html[data-theme="dark"] .text-slate-700,
+html[data-theme="dark"] .text-\[\#111111\] {
+  color: var(--text) !important;
+}
+
+html[data-theme="dark"] .text-gray-600,
+html[data-theme="dark"] .text-gray-500,
+html[data-theme="dark"] .text-gray-400,
+html[data-theme="dark"] .text-slate-600,
+html[data-theme="dark"] .text-slate-500,
+html[data-theme="dark"] .text-slate-400 {
+  color: var(--text-soft) !important;
+}
+
+html[data-theme="dark"] .border-gray-100,
+html[data-theme="dark"] .border-gray-200,
+html[data-theme="dark"] .border-slate-100,
+html[data-theme="dark"] .border-slate-200,
+html[data-theme="dark"] .border-indigo-100,
+html[data-theme="dark"] .border-indigo-200,
+html[data-theme="dark"] .border-violet-100,
+html[data-theme="dark"] .border-violet-200 {
+  border-color: var(--border) !important;
 }

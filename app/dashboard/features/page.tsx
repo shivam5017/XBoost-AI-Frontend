@@ -38,6 +38,7 @@ export default function FeaturesPage() {
   );
 
   const enabledCount = useMemo(() => live.filter((f) => f.enabled).length, [live]);
+  const extensionUrl = "https://chromewebstore.google.com/detail/pohpmpfbaenppabefjbgjfdhncnkfpml";
   return (
     <div className="min-h-full p-5 bg-gradient-to-br from-violet-50 via-white to-indigo-50 flex flex-col gap-4">
       <section className="rounded-3xl border border-indigo-100 bg-white p-6 shadow-[0_12px_36px_rgba(92,100,230,0.07)]">
@@ -48,6 +49,14 @@ export default function FeaturesPage() {
         <p className="mt-2 text-sm text-slate-600">
           Click any module to open a dedicated workspace. {enabledCount} of {live.length} modules are unlocked on your plan.
         </p>
+        <a
+          href={extensionUrl}
+          target="_blank"
+          rel="noreferrer"
+          className="mt-4 inline-flex rounded-lg bg-[#111111] px-3 py-2 text-xs font-semibold text-white hover:bg-[#1f1f1f]"
+        >
+          Open In Chrome Extension
+        </a>
       </section>
 
       <section className="grid grid-cols-1 gap-3 md:grid-cols-2">
