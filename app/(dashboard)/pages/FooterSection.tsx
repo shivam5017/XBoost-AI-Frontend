@@ -3,13 +3,13 @@
 import Logo from "@/app/components/Logo";
 
 const links = {
-  Product: ["Features", "How it works", "Testimonials", "Pricing", "FAQ"],
+  Product: ["Modules", "How it works", "Testimonials", "Pricing", "FAQ"],
   Legal: ["Privacy policy", "Terms of service", "Cookie policy"],
   Support: ["Help center", "Contact us"],
 };
 
 const linkMap: Record<string, string> = {
-  Features: "#features",
+  Modules: "#features",
   "How it works": "#how-it-works",
   Testimonials: "#testimonials",
   Pricing: "#pricing",
@@ -84,7 +84,7 @@ export default function Footer() {
         {/* Bottom row */}
         <div className="pt-6 border-t border-purple-500/8 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-[12px] font-mono text-gray-300">
-            © {new Date().getFullYear()} Xboost AI. All rights reserved.
+            © {new Date().getFullYear()} Xboost AI. All rights reserved. · v1.1.1
           </p>
           <div className="flex items-center gap-1.5">
             <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />

@@ -377,11 +377,11 @@ export default function FeatureDetailPage() {
         <section className="rounded-3xl border border-indigo-100 bg-white p-6 shadow-[0_12px_36px_rgba(92,100,230,0.07)]">
           <div className="flex items-center justify-between gap-3 flex-wrap">
             <div>
-              <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-violet-500">Feature Workspace</p>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-violet-500">Module Workspace</p>
               <h1 className="mt-2 text-2xl font-extrabold text-[#111111]">{meta?.hero || featureId}</h1>
               <p className="mt-1 text-sm text-slate-600">{meta?.prompt || feature?.description}</p>
             </div>
-            <Link href="/dashboard/features" className="text-xs font-semibold text-violet-600 hover:text-violet-700">← Back to Features</Link>
+            <Link href="/dashboard/features" className="text-xs font-semibold text-violet-600 hover:text-violet-700">← Back to Modules</Link>
           </div>
           <div className={`mt-4 h-1 rounded-full bg-gradient-to-r ${meta?.accent || "from-indigo-500 to-violet-500"} opacity-40`} />
         </section>

@@ -7,11 +7,11 @@ import PageLoader from "@/app/loading";
 
 const navItems = [
   { label: "Overview", href: "/dashboard" },
-  { label: "Features", href: "/dashboard/features" },
+  { label: "Modules", href: "/dashboard/features" },
+  { label: "Upcoming", href: "/dashboard/upcoming" },
   { label: "Tweet Templates", href: "/dashboard/tweet-templates" },
   { label: "Analytics", href: "/dashboard/analytics" },
   { label: "Billing", href: "/dashboard/billing" },
-  { label: "Settings", href: "/dashboard/settings" },
 ];
 
 function NavLinks({
@@ -24,8 +24,8 @@ function NavLinks({
   const pathname = usePathname();
   const router = useRouter();
   const items = isAdmin
-    ? [...navItems, { label: "Admin", href: "/dashboard/admin" }]
-    : navItems;
+    ? [...navItems, { label: "Admin", href: "/dashboard/admin" }, { label: "Settings", href: "/dashboard/settings" }]
+    : [...navItems, { label: "Settings", href: "/dashboard/settings" }];
 
   return (
     <nav className="flex flex-col gap-2">

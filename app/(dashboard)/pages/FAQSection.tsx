@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 
 const CHROME_STORE_URL =
-  "https://chromewebstore.google.com/detail/oiajgdnibolfekknkpogngmmenbddeeb";
+  "https://chromewebstore.google.com/detail/pohpmpfbaenppabefjbgjfdhncnkfpml";
 
 const faqs = [
   {

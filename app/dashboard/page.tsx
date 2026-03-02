@@ -5,7 +5,7 @@ import { useDashboard } from "./context";
 import { api, BillingSubscriptionResponse, RoadmapItem, TweetTemplate } from "@/utils/api";
 
 const CHROME_STORE_URL =
-  "https://chromewebstore.google.com/detail/oiajgdnibolfekknkpogngmmenbddeeb";
+  "https://chromewebstore.google.com/detail/pohpmpfbaenppabefjbgjfdhncnkfpml";
 
 export default function DashboardPage() {
   const { user } = useDashboard();

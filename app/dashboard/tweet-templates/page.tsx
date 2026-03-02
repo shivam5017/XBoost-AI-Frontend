@@ -4,17 +4,10 @@ import { useEffect, useMemo, useState } from "react";
 import { api, TweetTemplate } from "@/utils/api";
 import { toast } from "sonner";
 
-const TARGET_CHIP: Record<string, string> = {
-  both: "Both",
-  tweet: "Tweet",
-  reply: "Reply",
-};
-
 export default function TweetTemplatesPage() {
   const [loading, setLoading] = useState(true);
   const [templates, setTemplates] = useState<TweetTemplate[]>([]);
   const [query, setQuery] = useState("");
-  const [target, setTarget] = useState<"all" | "tweet" | "reply">("all");
 
   useEffect(() => {
     api.ai
@@ -26,17 +19,15 @@ export default function TweetTemplatesPage() {
 
   const filtered = useMemo(() => {
     return templates.filter((template) => {
-      const byTarget =
-        target === "all" || template.target === "both" || template.target === target;
       const q = query.trim().toLowerCase();
       const byQuery =
         !q ||
         template.label.toLowerCase().includes(q) ||
         template.instruction.toLowerCase().includes(q) ||
         (template.category || "").toLowerCase().includes(q);
-      return byTarget && byQuery;
+      return byQuery;
     });
-  }, [templates, query, target]);
+  }, [templates, query]);
 
   const formatStructure = (tpl: TweetTemplate) => {
     const raw = (tpl.structure || "").trim();
@@ -53,22 +44,6 @@ export default function TweetTemplatesPage() {
         <p className="mt-2 text-sm text-slate-600">
           Templates are loaded live from backend admin and shared across web + extension.
         </p>
-
-        <div className="mt-4 flex flex-wrap gap-2">
-          {(["all", "tweet", "reply"] as const).map((item) => (
-            <button
-              key={item}
-              onClick={() => setTarget(item)}
-              className={`rounded-full px-3 py-1 text-xs font-semibold border ${
-                target === item
-                  ? "bg-violet-600 text-white border-violet-600"
-                  : "bg-white text-slate-600 border-slate-200 hover:border-violet-200"
-              }`}
-            >
-              {item === "all" ? "All" : item === "tweet" ? "Tweet" : "Reply"}
-            </button>
-          ))}
-        </div>
 
         <div className="mt-3">
           <input
@@ -105,14 +80,9 @@ export default function TweetTemplatesPage() {
                   </p>
                   <p className="mt-1 text-[11px] text-slate-400 uppercase tracking-wide">{tpl.slug}</p>
                 </div>
-                <div className="flex gap-2">
-                  <span className="rounded-full border border-violet-200 bg-violet-50 px-2 py-0.5 text-[10px] font-semibold text-violet-700">
-                    {TARGET_CHIP[tpl.target] || "Both"}
-                  </span>
-                  <span className="rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-[10px] font-semibold text-slate-600">
-                    {tpl.category}
-                  </span>
-                </div>
+                <span className="rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-[10px] font-semibold text-slate-600">
+                  {tpl.category}
+                </span>
               </div>
 
               <p className="mt-3 text-sm text-slate-700 leading-relaxed">{tpl.instruction}</p>

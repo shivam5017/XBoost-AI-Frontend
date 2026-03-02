@@ -8,7 +8,7 @@ import IMG_COMPOSE from "@/public/create.png";
 import IMG_DASHBOARD from "@/public/dashboard.png";
 
 const CHROME_STORE_URL =
-  "https://chromewebstore.google.com/detail/oiajgdnibolfekknkpogngmmenbddeeb";
+  "https://chromewebstore.google.com/detail/pohpmpfbaenppabefjbgjfdhncnkfpml";
 
 export default function HeroSection() {
   const [loaded, setLoaded] = useState(false);

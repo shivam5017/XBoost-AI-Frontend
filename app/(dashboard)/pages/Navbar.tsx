@@ -4,10 +4,10 @@ import Logo from "@/app/components/Logo";
 import { useEffect, useState } from "react";
 
 const CHROME_STORE_URL =
-  "https://chromewebstore.google.com/detail/oiajgdnibolfekknkpogngmmenbddeeb";
+  "https://chromewebstore.google.com/detail/pohpmpfbaenppabefjbgjfdhncnkfpml";
 
 const navLinks = [
-  { label: "Features", href: "#features" },
+  { label: "Modules", href: "#features" },
   { label: "How it works", href: "#how-it-works" },
   { label: "Testimonials", href: "#testimonials" },
   { label: "Pricing", href: "#pricing" },

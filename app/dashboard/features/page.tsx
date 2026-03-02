@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { api, FeatureCatalogItem, RoadmapItem } from "@/utils/api";
+import { api, FeatureCatalogItem } from "@/utils/api";
 import { toast } from "sonner";
 import { FEATURE_HUB_ORDER, FEATURE_UI_META } from "./feature-meta";
 
@@ -15,17 +15,12 @@ function planChip(plan: "free" | "starter" | "pro") {
 export default function FeaturesPage() {
   const [loading, setLoading] = useState(true);
   const [features, setFeatures] = useState<FeatureCatalogItem[]>([]);
-  const [roadmap, setRoadmap] = useState<RoadmapItem[]>([]);
 
   useEffect(() => {
     const load = async () => {
       try {
-        const [list, roadmapItems] = await Promise.all([
-          api.billing.features(),
-          api.billing.roadmap().catch(() => [] as RoadmapItem[]),
-        ]);
+        const list = await api.billing.features();
         setFeatures(list);
-        setRoadmap(roadmapItems.filter((r) => r.isActive));
       } catch (error: any) {
         toast.error(error?.message || "Failed to load feature access");
       } finally {
@@ -43,12 +38,10 @@ export default function FeaturesPage() {
   );
 
   const enabledCount = useMemo(() => live.filter((f) => f.enabled).length, [live]);
-  const roadmapItems = useMemo(() => roadmap, [roadmap]);
-
   return (
     <div className="min-h-full p-5 bg-gradient-to-br from-violet-50 via-white to-indigo-50 flex flex-col gap-4">
       <section className="rounded-3xl border border-indigo-100 bg-white p-6 shadow-[0_12px_36px_rgba(92,100,230,0.07)]">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-violet-500">Feature Studio</p>
+        <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-violet-500">Module Studio</p>
         <h1 className="mt-2 text-2xl font-extrabold text-[#111111]">
           XBoost <span className="text-violet-600">AI</span> Modules
         </h1>
@@ -92,32 +85,6 @@ export default function FeaturesPage() {
             );
           })
         )}
-      </section>
-
-      <section className="rounded-3xl border border-violet-100 bg-white p-6 shadow-[0_12px_36px_rgba(124,58,237,0.07)]">
-        <div className="flex items-center justify-between">
-          <h2 className="text-xl font-bold text-[#111111]">Coming Soon</h2>
-          <span className="text-[10px] font-semibold uppercase tracking-[0.08em] text-violet-500">Roadmap</span>
-        </div>
-        <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-3">
-          {roadmapItems.map((item) => (
-            <div key={item.key} className="rounded-xl border border-indigo-100 bg-indigo-50/40 p-4">
-              <div className="flex items-center justify-between gap-2">
-                <p className="text-[11px] font-semibold uppercase tracking-wide text-indigo-600">{item.eta || "Soon"}</p>
-                <span className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded-full border ${item.status === "active" ? "bg-emerald-50 text-emerald-600 border-emerald-200" : "bg-violet-50 text-violet-600 border-violet-200"}`}>
-                  {item.status === "active" ? "Live" : "Upcoming"}
-                </span>
-              </div>
-              <p className="mt-1 text-sm font-bold text-[#111111]">{item.name}</p>
-              <p className="mt-1 text-xs leading-relaxed text-slate-600">{item.description}</p>
-            </div>
-          ))}
-          {!roadmapItems.length && (
-            <div className="rounded-xl border border-indigo-100 bg-indigo-50/40 p-4 text-xs text-slate-500">
-              No upcoming roadmap items configured yet.
-            </div>
-          )}
-        </div>
       </section>
     </div>
   );

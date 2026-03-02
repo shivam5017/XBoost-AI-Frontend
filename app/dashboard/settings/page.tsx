@@ -7,22 +7,19 @@ import PageLoader from "../../loading";
 import { toast } from "sonner";
 
 const GOAL_OPTIONS = [5, 10, 20];
+const APP_VERSION = "v1.1.1";
 const PROVIDERS = [
   { id: "openai", label: "OpenAI / ChatGPT" },
-  { id: "anthropic", label: "Anthropic" },
   { id: "google", label: "Google Gemini" },
   { id: "xai", label: "xAI (Grok)" },
-  { id: "cohere", label: "Cohere" },
   { id: "mistral", label: "Mistral" },
 ];
 
 const PROVIDER_LINKS: Record<string, { label: string; href: string }> = {
   openai: { label: "platform.openai.com", href: "https://platform.openai.com/api-keys" },
   chatgpt: { label: "platform.openai.com", href: "https://platform.openai.com/api-keys" },
-  anthropic: { label: "console.anthropic.com", href: "https://console.anthropic.com/settings/keys" },
   google: { label: "aistudio.google.com", href: "https://aistudio.google.com/app/apikey" },
   xai: { label: "console.x.ai", href: "https://console.x.ai/" },
-  cohere: { label: "dashboard.cohere.com", href: "https://dashboard.cohere.com/api-keys" },
   mistral: { label: "console.mistral.ai", href: "https://console.mistral.ai/api-keys/" },
 };
 
@@ -70,6 +67,12 @@ export default function DashboardSettingsPage() {
 
   const handleSaveApiKey = async () => {
     if (!apiKey.trim()) return;
+    if (user?.apiKeyProviders?.length) {
+      const message = "You already have an API key added. Remove it before adding another.";
+      setKeyError(message);
+      toast.error(message);
+      return;
+    }
     setKeySaving(true);
     setKeyError("");
     try {
@@ -288,6 +291,8 @@ export default function DashboardSettingsPage() {
           {goalSaved ? "✓ Saved!" : "Save Goal"}
         </button>
       </div>
+
+      <p className="text-center text-[11px] text-gray-400">Version {APP_VERSION}</p>
     </div>
   );
 }
