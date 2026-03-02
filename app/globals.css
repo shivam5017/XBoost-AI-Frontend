@@ -103,11 +103,22 @@ html[data-theme="dark"] .bg-white {
   background-color: var(--surface) !important;
 }
 
+html[data-theme="dark"] [class*="bg-white/"] {
+  background-color: color-mix(in srgb, var(--surface) 88%, transparent) !important;
+}
+
 html[data-theme="dark"] .bg-gray-50,
 html[data-theme="dark"] .bg-indigo-50,
 html[data-theme="dark"] .bg-violet-50,
 html[data-theme="dark"] .bg-slate-50 {
   background-color: var(--surface-muted) !important;
+}
+
+html[data-theme="dark"] [class*="bg-indigo-50/"],
+html[data-theme="dark"] [class*="bg-violet-50/"],
+html[data-theme="dark"] [class*="bg-blue-50/"],
+html[data-theme="dark"] [class*="bg-slate-50/"] {
+  background-color: color-mix(in srgb, var(--surface-muted) 90%, transparent) !important;
 }
 
 html[data-theme="dark"] .text-gray-800,
@@ -123,7 +134,11 @@ html[data-theme="dark"] .text-gray-500,
 html[data-theme="dark"] .text-gray-400,
 html[data-theme="dark"] .text-slate-600,
 html[data-theme="dark"] .text-slate-500,
-html[data-theme="dark"] .text-slate-400 {
+html[data-theme="dark"] .text-slate-400,
+html[data-theme="dark"] .text-indigo-500,
+html[data-theme="dark"] .text-indigo-600,
+html[data-theme="dark"] .text-violet-500,
+html[data-theme="dark"] .text-violet-600 {
   color: var(--text-soft) !important;
 }
 
@@ -156,6 +171,22 @@ html[data-theme="dark"] .from-blue-50 {
 html[data-theme="dark"] .to-indigo-50,
 html[data-theme="dark"] .to-violet-50,
 html[data-theme="dark"] .to-blue-50 {
+  --tw-gradient-to: #101017 var(--tw-gradient-to-position) !important;
+}
+
+html[data-theme="dark"] [class*="from-violet-50/"],
+html[data-theme="dark"] [class*="from-indigo-50/"],
+html[data-theme="dark"] [class*="from-blue-50/"],
+html[data-theme="dark"] [class*="from-white/"] {
+  --tw-gradient-from: #141426 var(--tw-gradient-from-position) !important;
+  --tw-gradient-to: rgb(20 20 38 / 0) var(--tw-gradient-to-position) !important;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
+}
+
+html[data-theme="dark"] [class*="to-violet-50/"],
+html[data-theme="dark"] [class*="to-indigo-50/"],
+html[data-theme="dark"] [class*="to-blue-50/"],
+html[data-theme="dark"] [class*="to-white/"] {
   --tw-gradient-to: #101017 var(--tw-gradient-to-position) !important;
 }
 

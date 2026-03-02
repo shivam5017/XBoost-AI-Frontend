@@ -302,15 +302,6 @@ export default function DashboardSettingsPage() {
       </div>
 
       <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
-        <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Legal</div>
-        <div className="flex gap-4 text-sm">
-          <a href="/privacy-policy" className="text-indigo-500 hover:text-indigo-600">Privacy Policy</a>
-          <a href="/terms-of-service" className="text-indigo-500 hover:text-indigo-600">Terms</a>
-          <a href="/cookie-policy" className="text-indigo-500 hover:text-indigo-600">Cookie Policy</a>
-        </div>
-      </div>
-
-      <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
         <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Security</div>
         <p className="text-xs text-gray-400 mb-3">Change your account password.</p>
         <div className="space-y-2">
@@ -377,6 +368,15 @@ export default function DashboardSettingsPage() {
         >
           {goalSaved ? "✓ Saved!" : "Save Goal"}
         </button>
+      </div>
+
+      <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
+        <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Legal</div>
+        <div className="flex gap-4 text-sm">
+          <a href="/privacy-policy" className="text-indigo-500 hover:text-indigo-600">Privacy Policy</a>
+          <a href="/terms-of-service" className="text-indigo-500 hover:text-indigo-600">Terms</a>
+          <a href="/cookie-policy" className="text-indigo-500 hover:text-indigo-600">Cookie Policy</a>
+        </div>
       </div>
 
       <p className="text-center text-[11px] text-gray-400">Version {APP_VERSION}</p>

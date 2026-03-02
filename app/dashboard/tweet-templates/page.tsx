@@ -12,7 +12,7 @@ export default function TweetTemplatesPage() {
   useEffect(() => {
     api.ai
       .templateCatalog()
-      .then((rows) => setTemplates(rows.filter((row) => row.isActive)))
+      .then((rows) => setTemplates(rows))
       .catch((error: any) => toast.error(error?.message || "Failed to load templates"))
       .finally(() => setLoading(false));
   }, []);
@@ -37,7 +37,7 @@ export default function TweetTemplatesPage() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto py-4 space-y-5">
+    <div className="page-shell max-w-6xl mx-auto py-4 space-y-5">
       <section className="rounded-3xl border border-indigo-100 bg-gradient-to-br from-indigo-50/90 via-white to-violet-50/90 p-6 shadow-[0_18px_48px_rgba(92,100,230,0.1)]">
         <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-indigo-500">Tweet Templates</p>
         <h1 className="mt-2 text-2xl font-extrabold text-[#111111]">Structured Formats Library</h1>

@@ -50,7 +50,7 @@ export default function RegisterPage() {
 
         {/* Header */}
         <div className="text-center mb-8">
-          <h2 className="font-extrabold text-gray-900 text-2xl">
+          <h2 className="font-extrabold text-gray-900 text-xl sm:text-2xl whitespace-nowrap">
             Create your account 🚀
           </h2>
           <p className="text-sm text-gray-500 mt-2">
@@ -116,7 +116,7 @@ export default function RegisterPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-3 text-sm font-semibold shadow-lg hover:opacity-90 transition disabled:opacity-60"
+            className="w-full rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-3 text-sm font-semibold whitespace-nowrap shadow-lg hover:opacity-90 transition disabled:opacity-60"
           >
             {loading ? "Creating account..." : "Create Account →"}
           </button>

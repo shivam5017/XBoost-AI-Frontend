@@ -2,7 +2,7 @@
 
 export default function UpcomingPage() {
   return (
-    <div className="max-w-5xl mx-auto py-4 space-y-4">
+    <div className="page-shell max-w-5xl mx-auto py-4 space-y-4">
       <section className="rounded-3xl border border-indigo-100 bg-gradient-to-br from-indigo-50/90 via-white to-violet-50/90 p-6 shadow-[0_18px_48px_rgba(92,100,230,0.1)]">
         <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-indigo-500">Upcoming</p>
         <h1 className="mt-2 text-2xl font-bold text-[#111111]">New Modules Roadmap</h1>

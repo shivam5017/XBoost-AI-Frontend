@@ -48,7 +48,7 @@ export default function LoginPage() {
 
         {/* Header */}
         <div className="text-center mb-8">
-          <h2 className="font-extrabold text-gray-900 text-2xl">
+          <h2 className="font-extrabold text-gray-900 text-xl sm:text-2xl whitespace-nowrap">
             Login to <span className="text-purple-600">XBoost AI</span>
           </h2>
           <p className="text-sm text-gray-500 mt-2">
@@ -100,7 +100,7 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 rounded-xl bg-purple-600 text-white font-medium hover:bg-purple-700 transition disabled:opacity-60 disabled:cursor-not-allowed"
+            className="w-full py-3 rounded-xl bg-purple-600 text-white font-medium whitespace-nowrap hover:bg-purple-700 transition disabled:opacity-60 disabled:cursor-not-allowed"
           >
             {loading ? "Signing you in..." : "Sign In →"}
           </button>

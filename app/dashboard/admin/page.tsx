@@ -161,7 +161,7 @@ export default function AdminPage() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto py-4 space-y-5">
+    <div className="page-shell max-w-6xl mx-auto py-4 space-y-5">
       <section className="rounded-3xl border border-indigo-100 bg-gradient-to-br from-indigo-50/90 via-white to-violet-50/90 p-6 shadow-[0_18px_48px_rgba(92,100,230,0.1)]">
         <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-indigo-500">Admin Console</p>
         <h1 className="mt-2 text-2xl font-extrabold text-[#111111]">Template + Prompt Control</h1>
@@ -216,6 +216,11 @@ export default function AdminPage() {
 
       <section className="rounded-2xl border border-indigo-100 bg-white p-5">
         <h2 className="text-lg font-bold text-[#111111]">Live Templates</h2>
+        {!loading && (
+          <p className="mt-1 text-xs text-slate-500">
+            Total templates loaded: {templates.length}
+          </p>
+        )}
         {loading ? (
           <div className="mt-3 text-sm text-slate-500">Loading...</div>
         ) : (

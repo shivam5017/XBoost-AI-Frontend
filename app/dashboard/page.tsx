@@ -23,7 +23,7 @@ export default function DashboardPage() {
         ]);
         const roadmapData = await api.billing.roadmap().catch(() => [] as RoadmapItem[]);
         setBilling(billingData);
-        setTemplates(templateData.filter((t) => t.isActive));
+        setTemplates(templateData);
         setRoadmap(roadmapData.filter((r) => r.isActive));
       } finally {
         setLoading(false);
@@ -66,10 +66,10 @@ export default function DashboardPage() {
     () => liveModules.filter((f) => f.enabled),
     [liveModules],
   );
-  const roadmapCards = useMemo(() => roadmap.slice(0, 3), [roadmap]);
+  const roadmapCards = useMemo(() => roadmap, [roadmap]);
 
   return (
-    <div className="max-w-6xl mx-auto py-4 space-y-6 text-[#1a0a2e]">
+    <div className="page-shell max-w-6xl mx-auto py-4 space-y-6 text-[#1a0a2e]">
       <section className="relative overflow-hidden rounded-3xl border border-indigo-100 bg-gradient-to-br from-indigo-50/95 via-white to-violet-50/90 p-7 shadow-[0_18px_60px_rgba(92,100,230,0.12)]">
         <div className="absolute -top-24 -right-20 h-64 w-64 rounded-full bg-indigo-200/45 blur-3xl" />
         <div className="absolute -bottom-24 -left-20 h-64 w-64 rounded-full bg-violet-200/35 blur-3xl" />
