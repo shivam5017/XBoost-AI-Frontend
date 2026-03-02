@@ -31,7 +31,7 @@ const EMPTY_FORM: TemplateForm = {
 };
 
 export default function AdminPage() {
-  const [adminPassword, setAdminPassword] = useState("shivammalik");
+  const [adminPassword, setAdminPassword] = useState(""); //add in future shivammalik
   const [templates, setTemplates] = useState<TweetTemplate[]>([]);
   const [prompts, setPrompts] = useState<PromptConfig[]>([]);
   const [form, setForm] = useState<TemplateForm>(EMPTY_FORM);
@@ -153,7 +153,8 @@ export default function AdminPage() {
         <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-indigo-500">Admin Console</p>
         <h1 className="mt-2 text-3xl font-extrabold text-[#111111]">Template + Prompt Control</h1>
         <p className="mt-2 text-sm text-slate-600">
-          Restricted to your admin email. Enter admin password here (default: <span className="font-semibold">shivammalik</span>) and click Unlock.
+          {/* add in future */}
+          Restricted to your admin email. Enter admin password here (default: <span className="font-semibold"></span>) and click Unlock.
         </p>
         <div className="mt-4 flex gap-2">
           <input

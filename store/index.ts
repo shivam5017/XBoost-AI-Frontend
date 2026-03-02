@@ -219,7 +219,7 @@ export const useStore = create<AppState>((set) => ({
 
     try {
       set({ billingLoading: true, billingError: null });
-      const base = typeof window !== "undefined" ? window.location.origin : "https://xboostai.netlify.app";
+      const base = typeof window !== "undefined" ? window.location.origin : "https://xboostai.in";
       const successUrl = `${base}/dashboard/billing?checkout=success`;
       const cancelUrl = `${base}/dashboard/billing?checkout=cancel`;
       const response = await api.billing.checkout(planId, { successUrl, cancelUrl });
