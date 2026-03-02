@@ -16,6 +16,7 @@ const navLinks = [
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [theme, setTheme] = useState<"light" | "dark">("light");
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -28,6 +29,22 @@ export default function Navbar() {
     document.body.style.overflow = mobileOpen ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
   }, [mobileOpen]);
+
+  useEffect(() => {
+    const current = typeof window !== "undefined" && localStorage.getItem("xboost_theme") === "dark"
+      ? "dark"
+      : "light";
+    setTheme(current);
+  }, []);
+
+  const toggleTheme = () => {
+    const next = theme === "dark" ? "light" : "dark";
+    setTheme(next);
+    document.documentElement.setAttribute("data-theme", next);
+    try {
+      localStorage.setItem("xboost_theme", next);
+    } catch {}
+  };
 
   return (
     <>
@@ -62,6 +79,22 @@ export default function Navbar() {
 
           {/* Desktop CTAs */}
           <div className="hidden md:flex items-center gap-3">
+            <button
+              onClick={toggleTheme}
+              aria-label="Toggle theme"
+              className="h-9 w-9 rounded-[9px] border border-purple-500/20 text-gray-600 hover:text-purple-700 hover:border-purple-400/40 inline-flex items-center justify-center transition-all duration-200"
+            >
+              {theme === "dark" ? (
+                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M12 3a6 6 0 1 0 9 9 9 9 0 1 1-9-9z" />
+                </svg>
+              ) : (
+                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="12" cy="12" r="4" />
+                  <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+                </svg>
+              )}
+            </button>
             <a
               href="/auth/login"
               className="px-4 py-2 rounded-[9px] border border-purple-500/20 text-gray-600 text-[13px] font-medium hover:text-purple-700 hover:border-purple-400/40 transition-all duration-200 whitespace-nowrap"
@@ -140,6 +173,12 @@ export default function Navbar() {
 
           {/* CTAs */}
           <div className="flex flex-col gap-3">
+            <button
+              onClick={toggleTheme}
+              className="w-full py-3 rounded-xl border border-purple-500/20 text-[14px] font-medium text-gray-500 hover:text-[#7c3aed] hover:border-purple-400/30 text-center transition-all duration-200 inline-flex items-center justify-center gap-2"
+            >
+              {theme === "dark" ? "☾" : "☀"} {theme === "dark" ? "Dark" : "Light"} mode
+            </button>
             <a
               href="/auth/login"
               className="w-full py-3 rounded-xl border border-purple-500/20 text-[14px] font-medium text-gray-500 hover:text-[#7c3aed] hover:border-purple-400/30 text-center transition-all duration-200"

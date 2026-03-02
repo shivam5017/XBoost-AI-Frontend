@@ -138,8 +138,19 @@ html[data-theme="dark"] .text-slate-400,
 html[data-theme="dark"] .text-indigo-500,
 html[data-theme="dark"] .text-indigo-600,
 html[data-theme="dark"] .text-violet-500,
-html[data-theme="dark"] .text-violet-600 {
+html[data-theme="dark"] .text-violet-600,
+html[data-theme="dark"] .text-\[\#7c3aed\],
+html[data-theme="dark"] .text-\[\#4f46e5\],
+html[data-theme="dark"] .text-\[\#6d28d9\] {
   color: var(--text-soft) !important;
+}
+
+html[data-theme="dark"] .bg-\[\#f8f7ff\] {
+  background-color: #0c0d14 !important;
+}
+
+html[data-theme="dark"] [class*="bg-[#f8f7ff]/"] {
+  background-color: color-mix(in srgb, #0c0d14 90%, transparent) !important;
 }
 
 html[data-theme="dark"] .border-gray-100,
