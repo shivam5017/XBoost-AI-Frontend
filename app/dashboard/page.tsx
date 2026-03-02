@@ -33,7 +33,7 @@ export default function DashboardPage() {
     load();
   }, []);
 
-  const templateList = useMemo(() => templates.slice(0, 6), [templates]);
+  const templateList = useMemo(() => templates, [templates]);
   const asTweet = (t: TweetTemplate) => {
     const structure = (t.structure || "").replace(/\\n/g, "\n").trim();
     const example = (t.example || "").replace(/\\n/g, "\n").trim();
@@ -76,7 +76,7 @@ export default function DashboardPage() {
 
         <div className="relative">
           <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-indigo-500">Workspace Overview</p>
-          <h1 className="mt-2 text-3xl font-extrabold text-[#1a0a2e] md:text-4xl">
+          <h1 className="mt-2 text-2xl font-extrabold text-[#1a0a2e] md:text-3xl">
             Welcome back, {user?.username ?? user?.email}
           </h1>
 
@@ -141,7 +141,11 @@ export default function DashboardPage() {
             <div className="h-24 rounded-xl shimmer" />
           </div>
         ) : templateList.length === 0 ? (
-          <p className="text-sm text-slate-500">No templates available yet.</p>
+          <div className="rounded-2xl border border-indigo-100 bg-white p-8 text-center">
+            <p className="text-3xl">✨</p>
+            <p className="mt-2 text-sm font-semibold text-[#111111]">No templates available yet</p>
+            <p className="mt-1 text-xs text-slate-500">Add templates from Admin to sync them here and in the extension.</p>
+          </div>
         ) : (
           <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
             {templateList.map((t) => (
@@ -182,7 +186,7 @@ export default function DashboardPage() {
           {unlockedModules.length} of {liveModules.length} live modules unlocked on your plan.
         </p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          {liveModules.slice(0, 6).map((feature) => (
+          {liveModules.map((feature) => (
             <div key={feature.id} className="rounded-xl border border-indigo-100 bg-white/90 px-4 py-3 flex items-start justify-between gap-3">
               <div>
                 <p className="text-sm font-semibold text-[#111111]">{feature.name}</p>
@@ -193,6 +197,13 @@ export default function DashboardPage() {
               </span>
             </div>
           ))}
+          {!liveModules.length && (
+            <div className="md:col-span-2 rounded-xl border border-indigo-100 bg-white/90 p-6 text-center">
+              <p className="text-2xl">🧩</p>
+              <p className="mt-2 text-sm font-semibold text-[#111111]">No live modules right now</p>
+              <p className="mt-1 text-xs text-slate-500">Enable modules from admin catalog to publish them.</p>
+            </div>
+          )}
         </div>
       </section>
 

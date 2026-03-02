@@ -11,6 +11,8 @@
   --text: #111111;
   --text-soft: #475569;
   --border: #e5e7eb;
+  --shell-bg: radial-gradient(1200px 700px at 10% -10%, #ece9ff 0%, transparent 45%), radial-gradient(1200px 700px at 100% 0%, #e5eeff 0%, transparent 45%), linear-gradient(180deg, #f5f3ff 0%, #ffffff 55%, #eef2ff 100%);
+  --page-bg: linear-gradient(180deg, #f7f5ff 0%, #ffffff 55%, #eef2ff 100%);
 }
 
 html {
@@ -25,6 +27,8 @@ html[data-theme="dark"] {
   --text: #f3f4f6;
   --text-soft: #cbd5e1;
   --border: #27272a;
+  --shell-bg: radial-gradient(1200px 700px at 10% -10%, rgba(111,76,255,0.18) 0%, transparent 45%), radial-gradient(1200px 700px at 100% 0%, rgba(61,104,255,0.15) 0%, transparent 45%), linear-gradient(180deg, #09090b 0%, #0d0f16 55%, #111322 100%);
+  --page-bg: linear-gradient(180deg, #0b0c13 0%, #0f1119 50%, #111427 100%);
 }
 
 /* Body = DM Sans */
@@ -63,7 +67,15 @@ h1, h2, h3 {
 
 h1 {
   line-height: 1.05;
-  font-size: clamp(30px, 4.2vw, 52px);
+  font-size: clamp(24px, 3vw, 36px);
+}
+
+h2 {
+  font-size: clamp(20px, 2.2vw, 28px);
+}
+
+h3 {
+  font-size: clamp(17px, 1.8vw, 22px);
 }
 
 .bg-grid-mask {
@@ -101,7 +113,8 @@ html[data-theme="dark"] .bg-slate-50 {
 html[data-theme="dark"] .text-gray-800,
 html[data-theme="dark"] .text-gray-700,
 html[data-theme="dark"] .text-slate-700,
-html[data-theme="dark"] .text-\[\#111111\] {
+html[data-theme="dark"] .text-\[\#111111\],
+html[data-theme="dark"] .text-\[\#1a0a2e\] {
   color: var(--text) !important;
 }
 
@@ -123,4 +136,37 @@ html[data-theme="dark"] .border-indigo-200,
 html[data-theme="dark"] .border-violet-100,
 html[data-theme="dark"] .border-violet-200 {
   border-color: var(--border) !important;
+}
+
+html[data-theme="dark"] .from-white,
+html[data-theme="dark"] .via-white {
+  --tw-gradient-from: #101017 var(--tw-gradient-from-position) !important;
+  --tw-gradient-to: rgb(16 16 23 / 0) var(--tw-gradient-to-position) !important;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
+}
+
+html[data-theme="dark"] .from-violet-50,
+html[data-theme="dark"] .from-indigo-50,
+html[data-theme="dark"] .from-blue-50 {
+  --tw-gradient-from: #141426 var(--tw-gradient-from-position) !important;
+  --tw-gradient-to: rgb(20 20 38 / 0) var(--tw-gradient-to-position) !important;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
+}
+
+html[data-theme="dark"] .to-indigo-50,
+html[data-theme="dark"] .to-violet-50,
+html[data-theme="dark"] .to-blue-50 {
+  --tw-gradient-to: #101017 var(--tw-gradient-to-position) !important;
+}
+
+.dashboard-shell {
+  background: var(--shell-bg);
+}
+
+.page-shell {
+  background: var(--page-bg);
+}
+
+html[data-theme="dark"] .shimmer {
+  background: linear-gradient(110deg, #1a1d2d 8%, #232845 18%, #1a1d2d 33%);
 }

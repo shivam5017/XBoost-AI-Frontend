@@ -40,7 +40,7 @@ export default function FeaturesPage() {
   const enabledCount = useMemo(() => live.filter((f) => f.enabled).length, [live]);
   const extensionUrl = "https://chromewebstore.google.com/detail/pohpmpfbaenppabefjbgjfdhncnkfpml";
   return (
-    <div className="min-h-full p-5 bg-gradient-to-br from-violet-50 via-white to-indigo-50 flex flex-col gap-4">
+    <div className="page-shell min-h-full p-5 flex flex-col gap-4">
       <section className="rounded-3xl border border-indigo-100 bg-white p-6 shadow-[0_12px_36px_rgba(92,100,230,0.07)]">
         <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-violet-500">Module Studio</p>
         <h1 className="mt-2 text-2xl font-extrabold text-[#111111]">
@@ -67,6 +67,12 @@ export default function FeaturesPage() {
             <div className="h-40 rounded-2xl shimmer" />
             <div className="h-40 rounded-2xl shimmer" />
           </>
+        ) : live.length === 0 ? (
+          <div className="md:col-span-2 rounded-2xl border border-indigo-100 bg-white p-8 text-center shadow-[0_8px_24px_rgba(92,100,230,0.06)]">
+            <p className="text-3xl">🧠</p>
+            <p className="mt-2 text-sm font-semibold text-[#131313]">No modules available yet</p>
+            <p className="mt-1 text-xs text-slate-500">Your admin can publish modules from the catalog panel.</p>
+          </div>
         ) : (
           live.map((feature) => {
             const meta = FEATURE_UI_META[feature.id];

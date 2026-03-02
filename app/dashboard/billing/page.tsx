@@ -396,7 +396,7 @@ export default function BillingPage() {
   };
 
   return (
-    <div className="min-h-full p-5 bg-gradient-to-br from-violet-50 via-white to-indigo-50 flex flex-col gap-4">
+    <div className="page-shell min-h-full p-5 flex flex-col gap-4">
 
       {/* ── Header ── */}
       <div className="flex items-start justify-between gap-3 flex-wrap">

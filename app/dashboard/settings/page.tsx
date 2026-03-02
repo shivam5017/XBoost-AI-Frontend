@@ -152,7 +152,7 @@ export default function DashboardSettingsPage() {
   if (!user) return null;
 
   return (
-    <div className="min-h-full p-5 bg-gradient-to-br from-violet-50 via-white to-indigo-50 flex flex-col gap-4">
+    <div className="page-shell min-h-full p-5 flex flex-col gap-4">
 
       {/* Header */}
       <div>

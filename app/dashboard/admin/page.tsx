@@ -164,7 +164,7 @@ export default function AdminPage() {
     <div className="max-w-6xl mx-auto py-4 space-y-5">
       <section className="rounded-3xl border border-indigo-100 bg-gradient-to-br from-indigo-50/90 via-white to-violet-50/90 p-6 shadow-[0_18px_48px_rgba(92,100,230,0.1)]">
         <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-indigo-500">Admin Console</p>
-        <h1 className="mt-2 text-3xl font-extrabold text-[#111111]">Template + Prompt Control</h1>
+        <h1 className="mt-2 text-2xl font-extrabold text-[#111111]">Template + Prompt Control</h1>
         <p className="mt-2 text-sm text-slate-600">
           {/* add in future */}
           Restricted to your admin email. Enter admin password here (default: <span className="font-semibold"></span>) and click Unlock.

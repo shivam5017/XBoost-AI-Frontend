@@ -21,6 +21,7 @@ function resolveApiBase() {
 const API_BASE = resolveApiBase();
 const AUTH_TOKEN_KEY = "xboost_auth_token";
 const ADMIN_PASSWORD_KEY = "xboost_admin_password";
+const REQUEST_TIMEOUT_MS = 12000;
 
 export class ApiError extends Error {
   status: number;
@@ -65,25 +66,45 @@ function setAdminPassword(password: string) {
 }
 
 async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
-  const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC";
-  const token = getAuthToken();
-  const res = await fetch(withBase(path), {
-    ...options,
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-      "x-timezone": timeZone,
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      ...options.headers,
-    },
-  });
+  const maxAttempts = (options.method || "GET").toUpperCase() === "GET" ? 2 : 1;
+  let lastError: unknown;
 
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({ error: "Request failed" }));
-    throw new ApiError(err.error || "Request failed", res.status, err);
+  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), REQUEST_TIMEOUT_MS);
+    try {
+      const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC";
+      const token = getAuthToken();
+      const res = await fetch(withBase(path), {
+        ...options,
+        credentials: "include",
+        signal: ctrl.signal,
+        headers: {
+          "Content-Type": "application/json",
+          "x-timezone": timeZone,
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          ...options.headers,
+        },
+      });
+      clearTimeout(timer);
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ error: "Request failed" }));
+        throw new ApiError(err.error || "Request failed", res.status, err);
+      }
+
+      return res.json();
+    } catch (error) {
+      clearTimeout(timer);
+      lastError = error;
+      if (attempt === maxAttempts) break;
+      await new Promise((r) => setTimeout(r, 280));
+    }
   }
 
-  return res.json();
+  if (lastError instanceof ApiError) throw lastError;
+  const message = lastError instanceof Error ? lastError.message : "Request failed";
+  throw new ApiError(message, 0, { error: message });
 }
 
 export const api = {

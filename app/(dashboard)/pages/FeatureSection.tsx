@@ -111,7 +111,7 @@ export default function FeaturesSection() {
   }, []);
 
   return (
-    <section className="relative bg-[#f8f7ff] overflow-hidden py-24 sm:py-32" id="features">
+    <section className="page-shell relative overflow-hidden py-24 sm:py-32" id="features">
       <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[780px] h-[520px] bg-[radial-gradient(ellipse_at_50%_50%,rgba(124,58,237,0.07),transparent_70%)]" />
 
       <div className="relative max-w-7xl mx-auto px-6 md:px-12">
@@ -130,7 +130,7 @@ export default function FeaturesSection() {
               Full-funnel creator stack
             </span>
           </div>
-          <h2 className="font-extrabold text-3xl sm:text-4xl lg:text-5xl leading-[1.05] tracking-[-0.03em] text-[#111111] mb-4">
+          <h2 className="font-extrabold text-2xl sm:text-3xl lg:text-4xl leading-[1.08] tracking-[-0.03em] text-[#111111] mb-4">
             XBoost <span className="text-violet-600">AI</span> is now a
             <br />
             complete growth system
@@ -152,6 +152,13 @@ export default function FeaturesSection() {
             />
           ))}
         </div>
+        {!features.length && (
+          <div className="rounded-2xl border border-violet-200/35 bg-white/85 p-8 text-center">
+            <p className="text-3xl">🚀</p>
+            <p className="mt-2 text-sm font-semibold text-[#111111]">Modules are being prepared</p>
+            <p className="mt-1 text-xs text-slate-500">Admin can publish the module catalog from backend.</p>
+          </div>
+        )}
 
         <div className="mt-8 flex justify-center">
           <a

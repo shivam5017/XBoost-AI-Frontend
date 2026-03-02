@@ -393,7 +393,7 @@ export default function FeatureDetailPage() {
   };
 
   return (
-    <div className="min-h-full p-5 bg-gradient-to-br from-violet-50 via-white to-indigo-50">
+    <div className="page-shell min-h-full p-5">
       <div className="max-w-4xl mx-auto space-y-4">
         <section className="rounded-3xl border border-indigo-100 bg-white p-6 shadow-[0_12px_36px_rgba(92,100,230,0.07)]">
           <div className="flex items-center justify-between gap-3 flex-wrap">

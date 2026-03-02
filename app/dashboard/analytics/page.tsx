@@ -251,7 +251,7 @@ export default function AnalyticsPage() {
   };
 
   return (
-    <div className="min-h-full p-5 bg-gradient-to-br from-violet-50 via-white to-indigo-50 flex flex-col gap-4">
+    <div className="page-shell min-h-full p-5 flex flex-col gap-4">
       {!accessChecked ? (
         <div className="rounded-2xl border border-indigo-100 bg-white p-6 shadow-sm">
           <div className="h-5 w-40 rounded-md shimmer mb-3" />

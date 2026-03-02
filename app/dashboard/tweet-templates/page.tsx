@@ -40,7 +40,7 @@ export default function TweetTemplatesPage() {
     <div className="max-w-6xl mx-auto py-4 space-y-5">
       <section className="rounded-3xl border border-indigo-100 bg-gradient-to-br from-indigo-50/90 via-white to-violet-50/90 p-6 shadow-[0_18px_48px_rgba(92,100,230,0.1)]">
         <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-indigo-500">Tweet Templates</p>
-        <h1 className="mt-2 text-3xl font-extrabold text-[#111111]">Structured Formats Library</h1>
+        <h1 className="mt-2 text-2xl font-extrabold text-[#111111]">Structured Formats Library</h1>
         <p className="mt-2 text-sm text-slate-600">
           Templates are loaded live from backend admin and shared across web + extension.
         </p>
@@ -63,8 +63,10 @@ export default function TweetTemplatesPage() {
           <div className="h-36 rounded-2xl shimmer" />
         </div>
       ) : filtered.length === 0 ? (
-        <div className="rounded-2xl border border-slate-200 bg-white p-8 text-sm text-slate-500 text-center">
-          No templates match your current filter.
+        <div className="rounded-2xl border border-slate-200 bg-white p-8 text-center">
+          <p className="text-3xl">🔎</p>
+          <p className="mt-2 text-sm font-semibold text-[#111111]">No templates match this filter</p>
+          <p className="mt-1 text-xs text-slate-500">Try another keyword or add new templates in admin.</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
