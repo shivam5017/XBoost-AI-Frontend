@@ -22,6 +22,7 @@ const API_BASE = resolveApiBase();
 const AUTH_TOKEN_KEY = "xboost_auth_token";
 const ADMIN_PASSWORD_KEY = "xboost_admin_password";
 const REQUEST_TIMEOUT_MS = 12000;
+const REQUEST_TIMEOUT_MESSAGE = "Request timed out. Please try again.";
 
 export class ApiError extends Error {
   status: number;
@@ -71,7 +72,7 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
 
   for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
     const ctrl = new AbortController();
-    const timer = setTimeout(() => ctrl.abort(), REQUEST_TIMEOUT_MS);
+    const timer = setTimeout(() => ctrl.abort(REQUEST_TIMEOUT_MESSAGE), REQUEST_TIMEOUT_MS);
     try {
       const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC";
       const token = getAuthToken();
@@ -96,7 +97,15 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
       return res.json();
     } catch (error) {
       clearTimeout(timer);
-      lastError = error;
+      if (ctrl.signal.aborted) {
+        const reason =
+          typeof ctrl.signal.reason === "string" && ctrl.signal.reason.trim()
+            ? ctrl.signal.reason
+            : REQUEST_TIMEOUT_MESSAGE;
+        lastError = new ApiError(reason, 408, { error: reason });
+      } else {
+        lastError = error;
+      }
       if (attempt === maxAttempts) break;
       await new Promise((r) => setTimeout(r, 280));
     }
